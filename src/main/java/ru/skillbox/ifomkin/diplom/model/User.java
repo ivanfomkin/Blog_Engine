@@ -48,4 +48,7 @@ public class User implements Serializable {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<Vote> votes;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private Set<Comment> comments;
 }
