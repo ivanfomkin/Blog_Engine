@@ -13,7 +13,7 @@ import java.util.Set;
 @Table(name = "users")
 public class User implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     //т.к. в postgres нет TINYINT, Будем использовать SMALLINT
@@ -42,6 +42,9 @@ public class User implements Serializable {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<Post> posts;
+
+    @OneToMany(mappedBy = "moderator", fetch = FetchType.LAZY)
+    private Set<Post> moderatedPosts;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<Vote> votes;

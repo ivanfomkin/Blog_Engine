@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Table(name = "post_votes")
 public class Vote implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)

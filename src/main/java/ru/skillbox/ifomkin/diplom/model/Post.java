@@ -13,7 +13,7 @@ import java.util.Set;
 @Table(name = "posts")
 public class Post implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "is_active", columnDefinition = "SMALLINT", nullable = false)
@@ -24,8 +24,11 @@ public class Post implements Serializable {
     @Column(name = "moderation_status", nullable = false)
     private Status moderationStatus = Status.NEW;
 
-    @Column(name = "moderator_id")
-    private Integer moderatorId;
+    //    @Column(name = "moderator_id")
+//    private Integer moderatorId;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "moderator_id")
+    private User moderator;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id")
@@ -46,4 +49,7 @@ public class Post implements Serializable {
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
     private Set<Vote> votes;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<TagsInPost> tags;
 }
