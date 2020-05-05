@@ -22,10 +22,10 @@ public class Vote implements Serializable {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @Column(name = "time", columnDefinition = "TIMESTAMP", nullable = false)
+    @Column(columnDefinition = "TIMESTAMP", nullable = false)
     private LocalDateTime time;
 
     //т.к. в postgres нет TINYINT, Будем использовать SMALLINT
-    @Column(name = "value", columnDefinition = "SMALLINT", nullable = false)
+    @Column(columnDefinition = "SMALLINT", nullable = false)
     private Byte value;
 }

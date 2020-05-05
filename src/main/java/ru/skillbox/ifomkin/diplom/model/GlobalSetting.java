@@ -3,21 +3,22 @@ package ru.skillbox.ifomkin.diplom.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Data
 @Table(name = "global_settings")
-public class GlobalSetting {
+public class GlobalSetting implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "code", nullable = false)
+    @Column(nullable = false)
     private String code;
 
-    @Column(name = "name", nullable = false)
+    @Column(nullable = false)
     private String name;
 
-    @Column(name = "value", nullable = false)
+    @Column(nullable = false)
     private String value;
 }

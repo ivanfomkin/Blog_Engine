@@ -3,12 +3,13 @@ package ru.skillbox.ifomkin.diplom.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
 @Data
 @Table(name = "post_comments")
-public class Comment {
+public class Comment implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -25,10 +26,10 @@ public class Comment {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "time", nullable = false)
+    @Column(nullable = false)
     //в postgres нет типа DATETIME, тип будет TIMESTAMP
     private LocalDateTime time;
 
-    @Column(name = "text", nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String text;
 }

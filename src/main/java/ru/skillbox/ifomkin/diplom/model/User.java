@@ -25,16 +25,16 @@ public class User implements Serializable {
     @Column(name = "reg_time", nullable = false)
     private LocalDateTime regTime;
 
-    @Column(name = "name", nullable = false)
+    @Column(nullable = false)
     private String name;
 
-    @Column(name = "email", nullable = false)
+    @Column(nullable = false)
     private String email;
 
-    @Column(name = "password", nullable = false)
+    @Column(nullable = false)
     private String password;
 
-    @Column(name = "code")
+    @Column
     private String code;
 
     @Column(columnDefinition = "TEXT")
