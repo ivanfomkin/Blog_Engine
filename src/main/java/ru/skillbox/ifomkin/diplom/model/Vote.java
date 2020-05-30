@@ -1,8 +1,10 @@
 package ru.skillbox.ifomkin.diplom.model;
 
 import lombok.Data;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -14,18 +16,19 @@ public class Vote implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @Column(columnDefinition = "TIMESTAMP", nullable = false)
+    @NotNull
+    @Type(type = "timestamp")
     private LocalDateTime time;
 
-    //т.к. в postgres нет TINYINT, Будем использовать SMALLINT
-    @Column(columnDefinition = "SMALLINT", nullable = false)
+    @NotNull
+    @Type(type = "org.hibernate.type.ByteType")
     private Byte value;
 }

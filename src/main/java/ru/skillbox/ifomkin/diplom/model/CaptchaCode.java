@@ -3,6 +3,7 @@ package ru.skillbox.ifomkin.diplom.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -14,15 +15,14 @@ public class CaptchaCode implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false)
-    //в postgres нет типа DATETIME, тип будет TIMESTAMP
+    @NotNull
     private LocalDateTime time;
 
-    //в postgres нет типа данных TINYTEXT, так что просто ограничим
-    //длину varchar в 80 символов, этого достаточно для капчи
-    @Column(nullable = false, length = 80)
-    private String text;
-
-    @Column(name = "secret_code", nullable = false, length = 80)
+    @NotNull
+    @Column(length = 80)
     private String code;
+
+    @NotNull
+    @Column(name = "secret_code", length = 80)
+    private String secretCode;
 }

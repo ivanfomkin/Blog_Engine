@@ -4,6 +4,7 @@ import lombok.Data;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -16,39 +17,36 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    //т.к. в postgres нет TINYINT, Будем использовать SMALLINT
-    @Column(name = "is_moderator", columnDefinition = "SMALLINT", nullable = false)
+    @NotNull
     @Type(type = "org.hibernate.type.NumericBooleanType")
     private Boolean isModerator;
 
-    //в postgres нет типа DATETIME, тип будет TIMESTAMP
-    @Column(name = "reg_time", nullable = false)
+    @NotNull
     private LocalDateTime regTime;
 
-    @Column(nullable = false)
+    @NotNull
     private String name;
 
-    @Column(nullable = false)
+    @NotNull
     private String email;
 
-    @Column(nullable = false)
+    @NotNull
     private String password;
 
-    @Column
     private String code;
 
-    @Column(columnDefinition = "TEXT")
+    @Type(type = "text")
     private String photo;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user")
     private Set<Post> posts;
 
-    @OneToMany(mappedBy = "moderator", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "moderator")
     private Set<Post> moderatedPosts;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user")
     private Set<Vote> votes;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user")
     private Set<Comment> comments;
 }

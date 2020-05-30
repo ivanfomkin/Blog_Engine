@@ -1,6 +1,7 @@
 package ru.skillbox.ifomkin.diplom.model;
 
 import lombok.Data;
+import lombok.NonNull;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,12 +14,12 @@ public class GlobalSetting implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false)
+    @NonNull
     private String code;
 
-    @Column(nullable = false)
+    @NonNull
     private String name;
 
-    @Column(nullable = false)
+    @NonNull
     private String value;
 }

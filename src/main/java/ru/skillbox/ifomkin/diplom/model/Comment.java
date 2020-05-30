@@ -1,10 +1,13 @@
 package ru.skillbox.ifomkin.diplom.model;
 
 import lombok.Data;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -14,22 +17,25 @@ public class Comment implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "parent_id")
     private Comment parent;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(nullable = false)
-    //в postgres нет типа DATETIME, тип будет TIMESTAMP
+    @NotNull
     private LocalDateTime time;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @NotNull
+    @Type(type = "text")
     private String text;
+
+    @OneToMany(mappedBy = "parent")
+    private List<Comment> children;
 }

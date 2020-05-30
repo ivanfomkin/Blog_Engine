@@ -2,11 +2,13 @@ package ru.skillbox.ifomkin.diplom.model;
 
 import lombok.Data;
 import org.hibernate.annotations.Type;
+import ru.skillbox.ifomkin.diplom.model.enumerated.Status;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Data
@@ -16,41 +18,41 @@ public class Post implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "is_active", columnDefinition = "SMALLINT", nullable = false)
+    @NotNull
     @Type(type = "org.hibernate.type.NumericBooleanType")
     private Boolean isActive;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "moderation_status", nullable = false)
-    private Status moderationStatus = Status.NEW;
+    private Status moderationStatus;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne
     @JoinColumn(name = "moderator_id")
     private User moderator;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(nullable = false)
-    //в postgres нет типа DATETIME, тип будет TIMESTAMP
+    @NotNull
     private LocalDateTime time;
 
-    @Column(nullable = false)
+    @NotNull
     private String title;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @NotNull
+    @Type(type = "text")
     private String text;
 
-    @Column(name = "view_count", nullable = false)
+    @NotNull
     private Integer viewCount;
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
-    private Set<Vote> votes;
+    @OneToMany(mappedBy = "post")
+    private List<Vote> votes;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<TagsInPost> tags;
+    @OneToMany(mappedBy = "tag")
+    private List<TagsInPost> tags;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<Comment> comments;
+    @OneToMany(mappedBy = "post")
+    private List<Comment> comments;
 }
