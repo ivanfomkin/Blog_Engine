@@ -1,4 +1,4 @@
-package ru.skillbox.ifomkin.diplom.service;
+package ru.skillbox.ifomkin.diplom.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class UserSerivice {
+public class UserService {
     @Autowired
     UserRepository repository;
 
