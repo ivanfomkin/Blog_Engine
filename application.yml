@@ -1,4 +1,15 @@
 spring.datasource.url: jdbc:postgresql://localhost:5432/blogdb
 spring.datasource.username: postgres
 spring.datasource.password: mysimplepass
-spring.jpa.hibernate.ddl-auto: update
+spring.jpa.show-sql: false
+spring.jpa.hibernate.ddl-auto: validate
+
+spring.flyway.password: mysimplepass
+spring.flyway.user: postgres
+
+blog.title: DevPub
+blog.subtitle: Рассказы разработчиков
+blog.phone: +7 930 2748482
+blog.email: ivan-fomkin@yandex.ru
+blog.copyright: Иван Фомкин
+blog.copyrightFrom: 2019

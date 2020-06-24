@@ -4,21 +4,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.skillbox.ifomkin.diplom.model.User;
 import ru.skillbox.ifomkin.diplom.repository.UserRepository;
+import ru.skillbox.ifomkin.diplom.service.UserService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class UserService {
+public class UserServiceImpl implements UserService {
+    private final UserRepository repository;
+
     @Autowired
-    UserRepository repository;
+    public UserServiceImpl(UserRepository repository) {
+        this.repository = repository;
+    }
 
     public List<User> getAll() {
-        Iterable<User> taskIterable = repository.findAll();
-        List<User> users = new ArrayList<>();
-        for (User user : taskIterable) {
-            users.add(user);
-        }
-        return users;
+        return repository.findAll();
     }
 }

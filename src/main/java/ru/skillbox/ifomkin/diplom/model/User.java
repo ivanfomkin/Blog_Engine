@@ -1,13 +1,16 @@
 package ru.skillbox.ifomkin.diplom.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
 import org.hibernate.annotations.Type;
+import ru.skillbox.ifomkin.diplom.dto.post.PostResponse;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Data
@@ -15,6 +18,7 @@ import java.util.Set;
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonView(PostResponse.class)
     private Integer id;
 
     @NotNull
@@ -25,6 +29,7 @@ public class User implements Serializable {
     private LocalDateTime regTime;
 
     @NotNull
+    @JsonView(PostResponse.class)
     private String name;
 
     @NotNull
@@ -39,14 +44,18 @@ public class User implements Serializable {
     private String photo;
 
     @OneToMany(mappedBy = "user")
-    private Set<Post> posts;
+    @JsonIgnore
+    private List<Post> posts;
 
     @OneToMany(mappedBy = "moderator")
-    private Set<Post> moderatedPosts;
+    @JsonIgnore
+    private List<Post> moderatedPosts;
 
     @OneToMany(mappedBy = "user")
-    private Set<Vote> votes;
+    @JsonIgnore
+    private List<Vote> votes;
 
     @OneToMany(mappedBy = "user")
-    private Set<Comment> comments;
+    @JsonIgnore
+    private List<Comment> comments;
 }

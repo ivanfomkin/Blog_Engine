@@ -1,10 +1,13 @@
 package ru.skillbox.ifomkin.diplom.dto.user;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import ru.skillbox.ifomkin.diplom.dto.ResponseDto;
+import lombok.NoArgsConstructor;
 
 @Data
-public class UserInPost implements ResponseDto {
+@AllArgsConstructor
+@NoArgsConstructor
+public class UserInPostResponse {
     private int id;
     private String name;
 }
