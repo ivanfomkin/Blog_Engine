@@ -3,6 +3,7 @@ package ru.skillbox.ifomkin.diplom.dto.post;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.skillbox.ifomkin.diplom.dto.Dto;
 
 import java.util.List;
 
@@ -11,5 +12,5 @@ import java.util.List;
 @NoArgsConstructor
 public class PostListResponse {
     private int count;
-    private List<PostResponse> posts;
+    private List<Dto> posts;
 }

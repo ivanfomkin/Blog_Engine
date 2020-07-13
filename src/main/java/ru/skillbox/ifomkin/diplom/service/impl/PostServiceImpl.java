@@ -4,74 +4,60 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.skillbox.ifomkin.diplom.model.Post;
 import ru.skillbox.ifomkin.diplom.repository.PostRepository;
+import ru.skillbox.ifomkin.diplom.repository.TagInPostRepo;
+import ru.skillbox.ifomkin.diplom.service.PostService;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-public class PostServiceImpl implements ru.skillbox.ifomkin.diplom.service.PostService {
-    private final PostRepository repository;
+public class PostServiceImpl implements PostService {
+    private final PostRepository postRepository;
+    private final TagInPostRepo tagInPostRepo;
 
     @Autowired
-    public PostServiceImpl(PostRepository repository) {
-        this.repository = repository;
+    public PostServiceImpl(PostRepository postRepository, TagInPostRepo tagInPostRepo) {
+        this.postRepository = postRepository;
+        this.tagInPostRepo = tagInPostRepo;
     }
 
+    @Override
     public List<Post> findAll() {
-        List<Post> posts = new ArrayList<>();
-        repository.findAll().forEach(p -> posts.add(p));
-        return posts;
+        return postRepository.findAll();
     }
 
     @Override
     public Post findById(int id) {
-        return repository.findById(id);
+        return postRepository.findById(id);
     }
 
+    @Override
+    public List<Post> findValidPosts() {
+        return postRepository.findValidPosts().stream()
+                .filter(post -> post.getTime().isBefore(LocalDateTime.now()))
+                .collect(Collectors.toList());
+    }
 
-//    public List<ResponseDto> getPostsDto() {
-//        List<ResponseDto> dtoForList = new ArrayList<>();
-//        findAll().forEach(post -> dtoForList.add(getPostDto(post)));
-//        return dtoForList;
-//    }
+    @Override
+    public List<Post> searchPost(String query) {
+        return postRepository.searchValidPosts(query.toLowerCase());
+    }
 
-//        FullPost fullPost = new FullPost();
-//
-//        String text = post.getText();
-//        UserInComment user = new UserInComment();
-//
-//        user.setId(post.getUser().getId());
-//        user.setName(post.getUser().getName());
-//        user.setPhoto(post.getUser().getPhoto());
-//
-//        fullPost.setId(post.getId());
-//        fullPost.setAnnounce(text.length() > 230 ? text.substring(0, 299) : text);
-//        fullPost.setCommentCount(post.getComments().size());
-//        fullPost.setDislikeCount(0);
-//        fullPost.setLikeCount(15);
-//        fullPost.setTime(post.getTime());
-//        fullPost.setTitle(post.getTitle());
-//        fullPost.setUser(user);
-//        fullPost.setViewCount(post.getViewCount());
-//        fullPost.setComments(commentService.getCommentsInPost(post));
-//        fullPost.setTags(new ArrayList<>());
-//        return fullPost;
+    @Override
+    public List<Post> findByDate(String date) {
+        LocalDate localDate = LocalDate.parse(date);
+        return findValidPosts().stream()
+                .filter(post -> post.getTime().toLocalDate().isEqual(localDate))
+                .collect(Collectors.toList());
+    }
 
-//    private ResponseDto getPostDto(Post postFromDb) {
-//        String text = postFromDb.getText();
-//        UserInPost user = new UserInPost();
-//        user.setId(postFromDb.getUser().getId());
-//        user.setName(postFromDb.getUser().getName());
-//        PostElement post = new PostElement();
-//        post.setId(postFromDb.getId());
-//        post.setAnnounce(text.length() > 230 ? text.substring(0, 299) : text);
-//        post.setCommentCount(postFromDb.getComments().size());
-//        post.setDislikeCount(0);
-//        post.setLikeCount(15);
-//        post.setTime(postFromDb.getTime());
-//        post.setTitle(postFromDb.getTitle());
-//        post.setUser(user);
-//        post.setViewCount(postFromDb.getViewCount());
-//        return post;
-//    }
+    @Override
+    public List<Post> findByTag(String tag) {
+        return tagInPostRepo.findByTag(tag).stream()
+                .map(tagInPost -> tagInPost.getPost())
+                .filter(post -> post.getTime().isBefore(LocalDateTime.now()))
+                .collect(Collectors.toList());
+    }
 }

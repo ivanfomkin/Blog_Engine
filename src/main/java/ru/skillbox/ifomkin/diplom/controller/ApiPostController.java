@@ -3,10 +3,7 @@ package ru.skillbox.ifomkin.diplom.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.skillbox.ifomkin.diplom.dto.post.PostListResponseFactory;
 import ru.skillbox.ifomkin.diplom.dto.post.PostResponseFactory;
 import ru.skillbox.ifomkin.diplom.service.PostService;
@@ -22,12 +19,52 @@ public class ApiPostController {
     }
 
     @GetMapping
-    public ResponseEntity getPostList() {
-        return ResponseEntity.status(HttpStatus.OK).body(PostListResponseFactory.getPosts(postService.findAll()));
+    public ResponseEntity<?> getPostList(
+            @RequestParam(required = false, defaultValue = "0") Integer offset,
+            @RequestParam(required = false, defaultValue = "20") Integer limit,
+            @RequestParam(required = false, defaultValue = "recent") String mode) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(PostListResponseFactory
+                        .getPosts(postService.findValidPosts(), offset, limit, mode));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchPosts(
+            @RequestParam(required = false, defaultValue = "0") Integer offset,
+            @RequestParam(required = false, defaultValue = "20") Integer limit,
+            @RequestParam(required = false, defaultValue = "") String query
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(PostListResponseFactory
+                        .getPosts(postService.searchPost(query), offset, limit, query));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getPostById(@PathVariable Integer id) {
-        return ResponseEntity.status(HttpStatus.OK).body(PostResponseFactory.getPost(postService.findById(id)));
+    public ResponseEntity<?> getPostById(@PathVariable Integer id) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(PostResponseFactory
+                        .getPost(postService.findById(id)));
+    }
+
+    @GetMapping("/byDate")
+    public ResponseEntity<?> getPostsByDate(
+            @RequestParam(required = false, defaultValue = "0") Integer offset,
+            @RequestParam(required = false, defaultValue = "20") Integer limit,
+            @RequestParam(required = false, defaultValue = "") String date
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(PostListResponseFactory
+                        .getElementsWithLimit(postService.findByDate(date), offset, limit));
+    }
+
+    @GetMapping("/byTag")
+    public ResponseEntity<?> getPostsByTag(
+            @RequestParam(required = false, defaultValue = "0") Integer offset,
+            @RequestParam(required = false, defaultValue = "20") Integer limit,
+            @RequestParam(required = false, defaultValue = "") String tag
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(PostListResponseFactory
+                        .getElementsWithLimit(postService.findByTag(tag), limit, offset));
     }
 }

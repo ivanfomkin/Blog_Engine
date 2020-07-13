@@ -8,7 +8,6 @@ import java.util.ArrayList;
 public class PostResponseFactory {
     public static PostResponse getPost(Post post) {
         return new FullPostResponse(
-
                 post.getId(),
                 post.getTime(),
                 new UserInPostResponse(
@@ -16,6 +15,7 @@ public class PostResponseFactory {
                         post.getUser().getName()
                 ),
                 post.getTitle(),
+                post.getText().length() > 250 ? post.getText().substring(0, 250) : post.getText(),
                 post.getText(),
                 15,
                 10,

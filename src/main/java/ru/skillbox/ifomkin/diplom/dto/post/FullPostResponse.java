@@ -17,11 +17,13 @@ import java.util.List;
 public class FullPostResponse extends PostResponse {
     protected List<CommentInPost> comments;
     protected List<Tag> tags;
+    protected String text;
 
     @Builder
-    public FullPostResponse(int id, LocalDateTime time, UserInPostResponse user, String title, String announce, int likeCount, int dislikeCount, int commentCount, int viewCount, List<CommentInPost> comments, List<Tag> tags) {
+    public FullPostResponse(int id, LocalDateTime time, UserInPostResponse user, String title, String announce, String text, int likeCount, int dislikeCount, int commentCount, int viewCount, List<CommentInPost> comments, List<Tag> tags) {
         super(id, time, user, title, announce, likeCount, dislikeCount, commentCount, viewCount);
         this.comments = comments;
         this.tags = tags;
+        this.text = text;
     }
 }
