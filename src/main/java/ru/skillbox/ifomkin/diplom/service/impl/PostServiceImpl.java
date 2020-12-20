@@ -3,6 +3,7 @@ package ru.skillbox.ifomkin.diplom.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.skillbox.ifomkin.diplom.model.Post;
+import ru.skillbox.ifomkin.diplom.model.TagInPost;
 import ru.skillbox.ifomkin.diplom.repository.PostRepository;
 import ru.skillbox.ifomkin.diplom.repository.TagInPostRepo;
 import ru.skillbox.ifomkin.diplom.service.PostService;
@@ -35,9 +36,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<Post> findValidPosts() {
-        return postRepository.findValidPosts().stream()
-                .filter(post -> post.getTime().isBefore(LocalDateTime.now()))
-                .collect(Collectors.toList());
+//        return postRepository.findActivePosts().stream()
+//                .filter(post -> post.getTime().before(new Date()))
+//                .collect(Collectors.toList());
+
+        return postRepository.findActivePosts();
     }
 
     @Override
@@ -49,14 +52,14 @@ public class PostServiceImpl implements PostService {
     public List<Post> findByDate(String date) {
         LocalDate localDate = LocalDate.parse(date);
         return findValidPosts().stream()
-                .filter(post -> post.getTime().toLocalDate().isEqual(localDate))
+                .filter(post -> post.getTime().equals(localDate))
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Post> findByTag(String tag) {
         return tagInPostRepo.findByTag(tag).stream()
-                .map(tagInPost -> tagInPost.getPost())
+                .map(TagInPost::getPost)
                 .filter(post -> post.getTime().isBefore(LocalDateTime.now()))
                 .collect(Collectors.toList());
     }

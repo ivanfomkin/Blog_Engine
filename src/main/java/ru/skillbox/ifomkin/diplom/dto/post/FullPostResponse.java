@@ -20,7 +20,7 @@ public class FullPostResponse extends PostResponse {
     protected String text;
 
     @Builder
-    public FullPostResponse(int id, LocalDateTime time, UserInPostResponse user, String title, String announce, String text, int likeCount, int dislikeCount, int commentCount, int viewCount, List<CommentInPost> comments, List<Tag> tags) {
+    public FullPostResponse(int id, long time, UserInPostResponse user, String title, String announce, String text, int likeCount, int dislikeCount, int commentCount, int viewCount, List<CommentInPost> comments, List<Tag> tags) {
         super(id, time, user, title, announce, likeCount, dislikeCount, commentCount, viewCount);
         this.comments = comments;
         this.tags = tags;

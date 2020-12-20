@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/blogdb
+    username: postgres
+    password: mysimplepass
+  security:
+    user:
+      password: 1
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    password: mysimplepass
+    user: postgres
+
+blog:
+  title: DevPub
+  subtitle: Рассказы разработчиков
+  phone: +7 930 2748482
+  email: ivan-fomkin@yandex.ru
+  copyright: Иван Фомкин
+  copyrightFrom: 2019

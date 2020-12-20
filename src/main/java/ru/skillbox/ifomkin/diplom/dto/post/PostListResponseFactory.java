@@ -4,6 +4,7 @@ import ru.skillbox.ifomkin.diplom.dto.Dto;
 import ru.skillbox.ifomkin.diplom.dto.user.UserInPostResponse;
 import ru.skillbox.ifomkin.diplom.model.Post;
 
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -39,7 +40,7 @@ public class PostListResponseFactory {
         List<Dto> postDtoList = getElementsWithLimit(posts, offset, limit)
                 .stream().map(post -> new PostResponse(
                         post.getId(),
-                        post.getTime(),
+                        post.getTime().toEpochSecond(ZoneOffset.UTC),
                         new UserInPostResponse(
                                 post.getUser().getId(),
                                 post.getUser().getName()

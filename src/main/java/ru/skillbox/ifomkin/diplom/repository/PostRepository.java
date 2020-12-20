@@ -14,7 +14,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     @Query(value = "SELECT p from Post p where p.isActive = true " +
             "and p.moderationStatus = 'ACCEPTED'")
-    List<Post> findValidPosts();
+    List<Post> findActivePosts();
 
     @Query(value = "SELECT p from Post p where p.isActive = true " +
             "and p.moderationStatus = 'ACCEPTED' and (lower(p.text) like %:query% " +
