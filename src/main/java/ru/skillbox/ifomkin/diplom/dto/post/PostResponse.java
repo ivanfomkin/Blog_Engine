@@ -11,7 +11,7 @@ import ru.skillbox.ifomkin.diplom.dto.user.UserInPostResponse;
 @NoArgsConstructor
 public class PostResponse implements Dto {
     protected int id;
-    protected long time;
+    protected long timestamp;
     protected UserInPostResponse user;
     protected String title;
     protected String announce;
