@@ -27,9 +27,8 @@ public class PostListResponseFactory {
         if (mode.equals("best")) {
             posts.sort((
                     Comparator.comparingInt(post ->
-                            post.getVotes().stream()
-                                    .filter(vote -> vote.getValue() == 1)
-                                    .collect(Collectors.toList()).size())
+                            (int) post.getVotes().stream()
+                                    .filter(vote -> vote.getValue() == 1).count())
             ));
         }
         if (mode.equals("early")) {
@@ -37,7 +36,7 @@ public class PostListResponseFactory {
                     Comparator.comparing(Post::getTime)
             ));
         }
-        List<Dto> postDtoList = getElementsWithLimit(posts, offset, limit)
+        return getElementsWithLimit(posts, offset, limit)
                 .stream().map(post -> new PostResponse(
                         post.getId(),
                         post.getTime().toEpochSecond(ZoneOffset.UTC),
@@ -52,7 +51,6 @@ public class PostListResponseFactory {
                         post.getComments().size(),
                         post.getViewCount()
                 )).collect(Collectors.toList());
-        return postDtoList;
     }
 
     public static List<Post> getElementsWithLimit(List<Post> list, int offset, int limit) {

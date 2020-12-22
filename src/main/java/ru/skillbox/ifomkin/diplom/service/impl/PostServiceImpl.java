@@ -44,7 +44,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> searchPost(String query) {
+    public List<Post> searchPosts(String query) {
         return postRepository.searchValidPosts(query.toLowerCase());
     }
 

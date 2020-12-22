@@ -13,7 +13,7 @@ public interface PostService {
 
     List<Post> findValidPosts();
 
-    List<Post> searchPost(String query);
+    List<Post> searchPosts(String query);
 
     List<Post> findByDate(String date);
 

@@ -36,7 +36,7 @@ public class ApiPostController {
     ) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(PostListResponseFactory
-                        .getPosts(postService.searchPost(query), offset, limit, query));
+                        .getPosts(postService.searchPosts(query), offset, limit, query));
     }
 
     @GetMapping("/{id}")

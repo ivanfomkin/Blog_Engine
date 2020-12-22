@@ -3,9 +3,6 @@ spring:
     url: jdbc:postgresql://localhost:5432/blogdb
     username: postgres
     password: mysimplepass
-  security:
-    user:
-      password: 1
   jpa:
     show-sql: false
     hibernate:

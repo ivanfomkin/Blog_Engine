@@ -1,2 +1,11 @@
-package ru.skillbox.ifomkin.diplom.model.enumerated;public class Role {
+package ru.skillbox.ifomkin.diplom.model.enumerated;
+
+public enum Role {
+    USER,
+    MODERATOR;
+
+    @Override
+    public String toString() {
+        return name();
+    }
 }
