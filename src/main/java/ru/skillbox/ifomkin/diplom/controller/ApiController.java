@@ -1,26 +1,33 @@
 package ru.skillbox.ifomkin.diplom.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.skillbox.ifomkin.diplom.service.BlogInfoService;
-
-import java.util.Map;
+import ru.skillbox.ifomkin.diplom.service.GlobalSettingService;
 
 @RestController
 @RequestMapping("api")
 public class ApiController {
     private final BlogInfoService blogInfoService;
+    private final GlobalSettingService globalSettingService;
 
     @Autowired
-    public ApiController(BlogInfoService blogInfoService) {
+    public ApiController(BlogInfoService blogInfoService, GlobalSettingService globalSettingService) {
         this.blogInfoService = blogInfoService;
+        this.globalSettingService = globalSettingService;
     }
 
     @GetMapping("/init")
-    public Map<String, String> getBlogInfo() {
-        return blogInfoService.getBlogInfo();
+    public ResponseEntity<?> getBlogInfo() {
+        return ResponseEntity.ok(blogInfoService.getBlogInfo());
+    }
+
+    @GetMapping("/settings")
+    public ResponseEntity<?> getBlogSettings() {
+        return ResponseEntity.ok(globalSettingService.findAll());
     }
 
     @GetMapping("/tag")
@@ -39,4 +46,5 @@ public class ApiController {
                 " ]\n" +
                 "}\n";
     }
+
 }

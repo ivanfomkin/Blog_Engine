@@ -1,6 +1,8 @@
-package ru.skillbox.ifomkin.diplom.dto.post;
+package ru.skillbox.ifomkin.diplom.dto.post.factory;
 
 import ru.skillbox.ifomkin.diplom.dto.Dto;
+import ru.skillbox.ifomkin.diplom.dto.post.response.PostListResponse;
+import ru.skillbox.ifomkin.diplom.dto.post.response.PostResponse;
 import ru.skillbox.ifomkin.diplom.dto.user.UserInPostResponse;
 import ru.skillbox.ifomkin.diplom.model.Post;
 

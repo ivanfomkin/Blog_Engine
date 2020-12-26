@@ -6,4 +6,8 @@ import java.util.List;
 
 public interface UserService {
     List<User> getAll();
+
+    Boolean isExists(String email);
+
+    User findByEmail(String email);
 }

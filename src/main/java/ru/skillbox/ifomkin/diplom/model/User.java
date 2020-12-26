@@ -4,7 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
 import org.hibernate.annotations.Type;
-import ru.skillbox.ifomkin.diplom.dto.post.PostResponse;
+import ru.skillbox.ifomkin.diplom.dto.post.response.PostResponse;
+import ru.skillbox.ifomkin.diplom.model.enumerated.Role;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -58,4 +59,8 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<Comment> comments;
+
+    public Role getRole() {
+        return isModerator ? Role.MODERATOR : Role.USER;
+    }
 }

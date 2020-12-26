@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.skillbox.ifomkin.diplom.model.Post;
 import ru.skillbox.ifomkin.diplom.model.TagInPost;
 import ru.skillbox.ifomkin.diplom.repository.PostRepository;
-import ru.skillbox.ifomkin.diplom.repository.TagInPostRepo;
+import ru.skillbox.ifomkin.diplom.repository.TagInPostRepository;
 import ru.skillbox.ifomkin.diplom.service.PostService;
 
 import java.time.LocalDate;
@@ -16,12 +16,12 @@ import java.util.stream.Collectors;
 @Service
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
-    private final TagInPostRepo tagInPostRepo;
+    private final TagInPostRepository tagInPostRepository;
 
     @Autowired
-    public PostServiceImpl(PostRepository postRepository, TagInPostRepo tagInPostRepo) {
+    public PostServiceImpl(PostRepository postRepository, TagInPostRepository tagInPostRepository) {
         this.postRepository = postRepository;
-        this.tagInPostRepo = tagInPostRepo;
+        this.tagInPostRepository = tagInPostRepository;
     }
 
     @Override
@@ -58,7 +58,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<Post> findByTag(String tag) {
-        return tagInPostRepo.findByTag(tag).stream()
+        return tagInPostRepository.findByTag(tag).stream()
                 .map(TagInPost::getPost)
                 .filter(post -> post.getTime().isBefore(LocalDateTime.now()))
                 .collect(Collectors.toList());

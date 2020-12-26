@@ -1,4 +1,4 @@
-package ru.skillbox.ifomkin.diplom.dto.post;
+package ru.skillbox.ifomkin.diplom.dto.post.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

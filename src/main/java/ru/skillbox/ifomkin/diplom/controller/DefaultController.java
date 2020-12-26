@@ -7,11 +7,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class DefaultController {
 
-    @RequestMapping(path = "/*", method = RequestMethod.GET)
+    @RequestMapping(path = "/", method = RequestMethod.GET)
     public String mainPage() {
         return "index";
     }
-    @RequestMapping(method = {RequestMethod.OPTIONS, RequestMethod.GET}, value = "/*/{path:[^\\.]}")
+
+    @RequestMapping(method = {RequestMethod.OPTIONS, RequestMethod.GET}, value = "/**/{path:[^\\.]}")
     public String all() {
         return "forward:/";
     }

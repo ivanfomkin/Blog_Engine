@@ -1,4 +1,4 @@
-package ru.skillbox.ifomkin.diplom.dto.user;
+package ru.skillbox.ifomkin.diplom.dto.security.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +8,7 @@ import ru.skillbox.ifomkin.diplom.dto.Dto;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserInPostResponse implements Dto {
-    private int id;
-    private String name;
+public class LoginResponse implements Dto {
+    private boolean result;
+    private UserSecurityResponse user;
 }

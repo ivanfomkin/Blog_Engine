@@ -1,4 +1,4 @@
-package ru.skillbox.ifomkin.diplom.dto.post;
+package ru.skillbox.ifomkin.diplom.dto.post.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostListResponse {
+public class PostListResponse implements Dto {
     private int count;
     private List<Dto> posts;
 }
