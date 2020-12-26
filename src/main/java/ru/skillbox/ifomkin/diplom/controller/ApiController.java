@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.skillbox.ifomkin.diplom.dto.settings.factory.SettingsResponseFactory;
 import ru.skillbox.ifomkin.diplom.service.BlogInfoService;
 import ru.skillbox.ifomkin.diplom.service.GlobalSettingService;
 
@@ -27,7 +28,8 @@ public class ApiController {
 
     @GetMapping("/settings")
     public ResponseEntity<?> getBlogSettings() {
-        return ResponseEntity.ok(globalSettingService.findAll());
+        return ResponseEntity.ok(
+                SettingsResponseFactory.getSettingsResponse(globalSettingService.findAll()));
     }
 
     @GetMapping("/tag")

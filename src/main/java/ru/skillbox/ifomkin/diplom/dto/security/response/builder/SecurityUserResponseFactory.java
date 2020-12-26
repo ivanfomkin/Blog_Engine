@@ -5,14 +5,17 @@ import ru.skillbox.ifomkin.diplom.model.User;
 
 public class SecurityUserResponseFactory {
     public static UserSecurityResponse getUserSecurityResponse(User user) {
-        return new UserSecurityResponse(
-                user.getId(),
-                user.getName(),
-                user.getPhoto(),
-                user.getEmail(),
-                user.getIsModerator(),
-                user.getModeratedPosts().size(),
-                false
-        );
+        if (user == null)
+            return null;
+        else
+            return new UserSecurityResponse(
+                    user.getId(),
+                    user.getName(),
+                    user.getPhoto(),
+                    user.getEmail(),
+                    user.getIsModerator(),
+                    user.getModeratedPosts().size(),
+                    false
+            );
     }
 }

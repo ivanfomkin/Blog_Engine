@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,10 @@ import ru.skillbox.ifomkin.diplom.dto.security.response.builder.LoginResponseFac
 import ru.skillbox.ifomkin.diplom.model.User;
 import ru.skillbox.ifomkin.diplom.service.AuthService;
 import ru.skillbox.ifomkin.diplom.service.UserService;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.security.Principal;
 
 @Controller
 @RequestMapping("api/auth")
@@ -38,5 +43,21 @@ public class ApiAuthController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(LoginResponseFactory.getLoginResponse(auth.isAuthenticated(), user));
+    }
+
+    @GetMapping("/check")
+    public ResponseEntity<?> checkAuth(Principal principal) {
+        boolean authorized = authService.checkAuthorisation(principal);
+        return ResponseEntity.ok(
+                LoginResponseFactory.getLoginResponse(
+                        authorized,
+                        authorized ? userService.findByEmail(principal.getName()) : null
+                ));
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+        authService.logout(request, response);
+        return ResponseEntity.ok(LoginResponseFactory.getLoginResponse(true, null));
     }
 }

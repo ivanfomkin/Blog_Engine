@@ -5,19 +5,22 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 import ru.skillbox.ifomkin.diplom.repository.UserRepository;
 import ru.skillbox.ifomkin.diplom.service.AuthService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.security.Principal;
+
 @Service
 public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
-    private final UserRepository userRepository;
 
     @Autowired
     public AuthServiceImpl(AuthenticationManager authenticationManager, UserRepository userRepository) {
         this.authenticationManager = authenticationManager;
-        this.userRepository = userRepository;
     }
 
     @Override
@@ -26,5 +29,15 @@ public class AuthServiceImpl implements AuthService {
                 new UsernamePasswordAuthenticationToken(email, password));
         SecurityContextHolder.getContext().setAuthentication(auth);
         return auth;
+    }
+
+    @Override
+    public Boolean checkAuthorisation(Principal principal) {
+        return principal != null;
+    }
+
+    @Override
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        new SecurityContextLogoutHandler().logout(request, response, null);
     }
 }
