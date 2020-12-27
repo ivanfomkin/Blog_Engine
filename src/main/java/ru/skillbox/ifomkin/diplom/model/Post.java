@@ -2,6 +2,7 @@ package ru.skillbox.ifomkin.diplom.model;
 
 import lombok.Data;
 import org.hibernate.annotations.Type;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import ru.skillbox.ifomkin.diplom.model.enumerated.Status;
 
 import javax.persistence.*;

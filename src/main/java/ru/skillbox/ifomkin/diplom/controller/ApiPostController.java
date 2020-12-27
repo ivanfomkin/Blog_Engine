@@ -6,6 +6,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.skillbox.ifomkin.diplom.dto.post.factory.PostListResponseFactory;
 import ru.skillbox.ifomkin.diplom.dto.post.factory.PostResponseFactory;
+import ru.skillbox.ifomkin.diplom.dto.post.request.PostRequest;
+import ru.skillbox.ifomkin.diplom.model.Post;
 import ru.skillbox.ifomkin.diplom.service.PostService;
 
 import java.security.Principal;
@@ -40,9 +42,14 @@ public class ApiPostController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getPostById(@PathVariable Integer id) {
+    public ResponseEntity<?> getPostById(@PathVariable Integer id,
+                                         Principal principal) {
+        Post post = postService.findById(id, principal);
+        if (post == null) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(PostResponseFactory
-                .getPost(postService.findById(id)));
+                .getPost(post));
     }
 
     @GetMapping("/byDate")
@@ -67,7 +74,7 @@ public class ApiPostController {
 
     @PreAuthorize("hasAuthority('user:moderate')")
     @GetMapping("/moderation")
-    public ResponseEntity<?> nonModeratedPosts(
+    public ResponseEntity<?> getNonModeratedPosts(
             @RequestParam(required = false, defaultValue = "0") Integer offset,
             @RequestParam(required = false, defaultValue = "10") Integer limit,
             @RequestParam(required = false, defaultValue = "") String status,
@@ -77,6 +84,27 @@ public class ApiPostController {
         if (status.equals("accepted"))
             mode = "recent";
         return ResponseEntity.ok(PostListResponseFactory
-                .getPosts(postService.findByStatus(status, principal), offset, limit, mode));
+                .getPosts(postService.findByStatusForModerator(status, principal), offset, limit, mode));
+    }
+
+    @PreAuthorize("hasAuthority('user:write')")
+    @GetMapping("/my")
+    public ResponseEntity<?> getMyPosts(
+            @RequestParam(required = false, defaultValue = "0") Integer offset,
+            @RequestParam(required = false, defaultValue = "10") Integer limit,
+            @RequestParam(required = false, defaultValue = "") String status,
+            Principal principal) {
+        String mode = "recent";
+        return ResponseEntity.ok(PostListResponseFactory
+                .getPosts(postService.findByStatusForUser(status, principal), offset, limit, mode));
+    }
+
+    @PreAuthorize("hasAuthority('user:write')")
+    @PostMapping
+    public ResponseEntity<?> createPost(
+            @RequestBody PostRequest postRequest,
+            Principal principal) {
+        return ResponseEntity.ok(PostResponseFactory.getPostAddResponse(
+                postService.createPost(postRequest, principal), postRequest));
     }
 }

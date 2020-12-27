@@ -28,5 +28,9 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     List<Post> findByModerationStatusAndAndModerator(Status status, User moderator);
 
+    List<Post> findByIsActiveAndUser(Boolean isActive, User user);
+
+    List<Post> findByIsActiveAndUserAndModerationStatus(Boolean isActive, User user, Status status);
+
     Integer countByModerationStatus(Status status);
 }

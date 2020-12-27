@@ -17,10 +17,12 @@ public class FullPostResponse extends PostResponse {
     protected List<CommentInPost> comments;
     protected List<Tag> tags;
     protected String text;
+    protected boolean active;
 
     @Builder
-    public FullPostResponse(int id, long time, UserInPostResponse user, String title, String announce, String text, int likeCount, int dislikeCount, int commentCount, int viewCount, List<CommentInPost> comments, List<Tag> tags) {
+    public FullPostResponse(int id, long time, boolean active, UserInPostResponse user, String title, String announce, String text, int likeCount, int dislikeCount, int commentCount, int viewCount, List<CommentInPost> comments, List<Tag> tags) {
         super(id, time, user, title, announce, likeCount, dislikeCount, commentCount, viewCount);
+        this.active = active;
         this.comments = comments;
         this.tags = tags;
         this.text = text;

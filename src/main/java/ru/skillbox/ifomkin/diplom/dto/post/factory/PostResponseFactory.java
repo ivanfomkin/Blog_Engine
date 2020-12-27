@@ -1,6 +1,9 @@
 package ru.skillbox.ifomkin.diplom.dto.post.factory;
 
+import ru.skillbox.ifomkin.diplom.dto.post.request.PostRequest;
 import ru.skillbox.ifomkin.diplom.dto.post.response.FullPostResponse;
+import ru.skillbox.ifomkin.diplom.dto.post.response.PostAddErrorResponse;
+import ru.skillbox.ifomkin.diplom.dto.post.response.PostAddResponse;
 import ru.skillbox.ifomkin.diplom.dto.post.response.PostResponse;
 import ru.skillbox.ifomkin.diplom.dto.user.UserInPostResponse;
 import ru.skillbox.ifomkin.diplom.model.Post;
@@ -13,6 +16,7 @@ public class PostResponseFactory {
         return new FullPostResponse(
                 post.getId(),
                 post.getTime().toEpochSecond(ZoneOffset.UTC),
+                post.getIsActive(),
                 new UserInPostResponse(
                         post.getUser().getId(),
                         post.getUser().getName()
@@ -27,5 +31,19 @@ public class PostResponseFactory {
                 new ArrayList<>(),
                 new ArrayList<>()
         );
+    }
+
+    public static PostAddResponse getPostAddResponse(boolean result, PostRequest postRequest) {
+        PostAddErrorResponse postAddErrorResponse = null;
+        if (!result) {
+            postAddErrorResponse = new PostAddErrorResponse();
+            if (postRequest.getText().length() < 50) {
+                postAddErrorResponse.setText("Текст публикации слишком короткий");
+            }
+            if (postRequest.getTitle().length() < 3) {
+                postAddErrorResponse.setTitle("Заголовок не установлен или слишком короткий");
+            }
+        }
+        return new PostAddResponse(result, postAddErrorResponse);
     }
 }
