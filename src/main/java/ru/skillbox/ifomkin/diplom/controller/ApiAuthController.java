@@ -14,6 +14,7 @@ import ru.skillbox.ifomkin.diplom.dto.security.response.LoginResponse;
 import ru.skillbox.ifomkin.diplom.dto.security.response.builder.LoginResponseFactory;
 import ru.skillbox.ifomkin.diplom.model.User;
 import ru.skillbox.ifomkin.diplom.service.AuthService;
+import ru.skillbox.ifomkin.diplom.service.PostService;
 import ru.skillbox.ifomkin.diplom.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,11 +27,13 @@ public class ApiAuthController {
 
     private final UserService userService;
     private final AuthService authService;
+    private final PostService postService;
 
     @Autowired
-    public ApiAuthController(UserService userService, AuthService authService) {
+    public ApiAuthController(UserService userService, AuthService authService, PostService postService) {
         this.userService = userService;
         this.authService = authService;
+        this.postService = postService;
     }
 
     @PostMapping("/login")
@@ -42,7 +45,7 @@ public class ApiAuthController {
         Authentication auth = authService.authenticate(loginsRequest.getEMail(), loginsRequest.getPassword());
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(LoginResponseFactory.getLoginResponse(auth.isAuthenticated(), user));
+                .body(LoginResponseFactory.getLoginResponse(auth.isAuthenticated(), user, postService));
     }
 
     @GetMapping("/check")
@@ -51,13 +54,15 @@ public class ApiAuthController {
         return ResponseEntity.ok(
                 LoginResponseFactory.getLoginResponse(
                         authorized,
-                        authorized ? userService.findByEmail(principal.getName()) : null
+                        authorized ? userService.findByEmail(principal.getName()) : null,
+                        postService
+
                 ));
     }
 
     @GetMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
         authService.logout(request, response);
-        return ResponseEntity.ok(LoginResponseFactory.getLoginResponse(true, null));
+        return ResponseEntity.ok(LoginResponseFactory.getLoginResponse(true, null, postService));
     }
 }

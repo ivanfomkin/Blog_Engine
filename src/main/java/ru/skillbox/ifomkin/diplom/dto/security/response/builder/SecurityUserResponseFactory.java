@@ -2,9 +2,11 @@ package ru.skillbox.ifomkin.diplom.dto.security.response.builder;
 
 import ru.skillbox.ifomkin.diplom.dto.security.response.UserSecurityResponse;
 import ru.skillbox.ifomkin.diplom.model.User;
+import ru.skillbox.ifomkin.diplom.model.enumerated.Status;
+import ru.skillbox.ifomkin.diplom.service.PostService;
 
 public class SecurityUserResponseFactory {
-    public static UserSecurityResponse getUserSecurityResponse(User user) {
+    public static UserSecurityResponse getUserSecurityResponse(User user, PostService postService) {
         if (user == null)
             return null;
         else
@@ -14,8 +16,10 @@ public class SecurityUserResponseFactory {
                     user.getPhoto(),
                     user.getEmail(),
                     user.getIsModerator(),
-                    user.getModeratedPosts().size(),
-                    false
+                    postService.countByModerationStatus(Status.NEW),
+                    user.getIsModerator()
             );
     }
+
+
 }

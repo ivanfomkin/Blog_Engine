@@ -2,10 +2,13 @@ package ru.skillbox.ifomkin.diplom.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.skillbox.ifomkin.diplom.dto.post.factory.PostListResponseFactory;
 import ru.skillbox.ifomkin.diplom.dto.post.factory.PostResponseFactory;
 import ru.skillbox.ifomkin.diplom.service.PostService;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("api/post")
@@ -18,7 +21,6 @@ public class ApiPostController {
     }
 
     @GetMapping
-//    @PreAuthorize("hasAuthority('user:write')")
     public ResponseEntity<?> getPostList(
             @RequestParam(required = false, defaultValue = "0") Integer offset,
             @RequestParam(required = false, defaultValue = "20") Integer limit,
@@ -61,5 +63,20 @@ public class ApiPostController {
     ) {
         return ResponseEntity.ok(PostListResponseFactory
                 .getElementsWithLimit(postService.findByTag(tag), limit, offset));
+    }
+
+    @PreAuthorize("hasAuthority('user:moderate')")
+    @GetMapping("/moderation")
+    public ResponseEntity<?> nonModeratedPosts(
+            @RequestParam(required = false, defaultValue = "0") Integer offset,
+            @RequestParam(required = false, defaultValue = "10") Integer limit,
+            @RequestParam(required = false, defaultValue = "") String status,
+            Principal principal
+    ) {
+        String mode = "early";
+        if (status.equals("accepted"))
+            mode = "recent";
+        return ResponseEntity.ok(PostListResponseFactory
+                .getPosts(postService.findByStatus(status, principal), offset, limit, mode));
     }
 }
