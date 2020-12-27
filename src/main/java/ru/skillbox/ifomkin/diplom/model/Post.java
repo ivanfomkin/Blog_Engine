@@ -51,7 +51,7 @@ public class Post implements Serializable {
     @OneToMany(mappedBy = "post")
     private List<Vote> votes;
 
-    @OneToMany(mappedBy = "tag")
+    @OneToMany(mappedBy = "post")
     private List<TagInPost> tags;
 
     @OneToMany(mappedBy = "post")

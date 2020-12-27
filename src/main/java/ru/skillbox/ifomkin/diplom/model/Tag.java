@@ -22,6 +22,6 @@ public class Tag implements Serializable {
     @NonNull
     private String name;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "tag")
     private List<TagInPost> posts;
 }

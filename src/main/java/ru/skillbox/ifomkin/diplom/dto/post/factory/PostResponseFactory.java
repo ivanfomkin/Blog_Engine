@@ -7,9 +7,11 @@ import ru.skillbox.ifomkin.diplom.dto.post.response.PostAddResponse;
 import ru.skillbox.ifomkin.diplom.dto.post.response.PostResponse;
 import ru.skillbox.ifomkin.diplom.dto.user.UserInPostResponse;
 import ru.skillbox.ifomkin.diplom.model.Post;
+import ru.skillbox.ifomkin.diplom.model.TagInPost;
 
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PostResponseFactory {
     public static PostResponse getPost(Post post) {
@@ -29,8 +31,7 @@ public class PostResponseFactory {
                 post.getComments().size(),
                 post.getViewCount(),
                 new ArrayList<>(),
-                new ArrayList<>()
-        );
+                getTagsFromTagInPost(post.getTags()));
     }
 
     public static PostAddResponse getPostAddResponse(boolean result, PostRequest postRequest) {
@@ -45,5 +46,13 @@ public class PostResponseFactory {
             }
         }
         return new PostAddResponse(result, postAddErrorResponse);
+    }
+
+    private static List<String> getTagsFromTagInPost(List<TagInPost> list) {
+        List<String> tags = new ArrayList<>();
+        for (TagInPost tagInPost : list) {
+            tags.add(tagInPost.getTag().getName());
+        }
+        return tags;
     }
 }

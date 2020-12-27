@@ -10,6 +10,8 @@ import java.io.Serializable;
 @Data
 @Table(name = "tag2post")
 @RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class TagInPost implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
