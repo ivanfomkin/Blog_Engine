@@ -48,5 +48,4 @@ public class ApiController {
                 " ]\n" +
                 "}\n";
     }
-
 }

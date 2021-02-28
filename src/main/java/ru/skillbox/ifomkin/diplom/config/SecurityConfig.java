@@ -34,6 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/**").permitAll()
+                .antMatchers("/upload/**").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -63,5 +64,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManager() throws Exception {
         return super.authenticationManager();
     }
-
 }

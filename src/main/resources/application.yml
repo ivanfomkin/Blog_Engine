@@ -10,6 +10,10 @@ spring:
   flyway:
     password: mysimplepass
     user: postgres
+  servlet:
+    multipart:
+      max-request-size: 100MB
+      max-file-size: 100MB
 
 blog:
   title: DevPub
@@ -18,3 +22,7 @@ blog:
   email: ivan-fomkin@yandex.ru
   copyright: Иван Фомкин
   copyrightFrom: 2019
+
+storage:
+  location: upload
+  max-file-size: 10MB
