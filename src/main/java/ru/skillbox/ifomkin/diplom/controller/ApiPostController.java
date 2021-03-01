@@ -107,4 +107,14 @@ public class ApiPostController {
         return ResponseEntity.ok(PostResponseFactory.getPostAddResponse(
                 postService.createPost(postRequest, principal), postRequest));
     }
+
+    @PreAuthorize("hasAuthority('user:write')")
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updatePost(
+            @RequestBody PostRequest postRequest,
+            Principal principal,
+            @PathVariable Integer id) {
+        return ResponseEntity.ok(PostResponseFactory.getPostAddResponse(
+                postService.updatePost(postRequest, id, principal), postRequest));
+    }
 }

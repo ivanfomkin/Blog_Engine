@@ -12,7 +12,7 @@ import java.util.List;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Integer> {
-    Post findById(int id);
+    Post findPostById(Integer id);
 
     @Query(value = "SELECT p from Post p where p.isActive = true " +
             "and p.moderationStatus = 'ACCEPTED'")

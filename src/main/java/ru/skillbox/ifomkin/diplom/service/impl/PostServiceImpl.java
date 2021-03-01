@@ -45,10 +45,10 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post findById(int id,
+    public Post findById(Integer id,
                          Principal principal) {
         User user = principal == null ? null : userRepository.findByEmail(principal.getName());
-        Post post = postRepository.findById(id);
+        Post post = postRepository.findPostById(id);
         if (user == null && post != null) {
             incrementViewCount(post);
         } else if (post != null && !user.getIsModerator()) {
@@ -61,10 +61,6 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<Post> findValidPosts() {
-//        return postRepository.findActivePosts().stream()
-//                .filter(post -> post.getTime().before(new Date()))
-//                .collect(Collectors.toList());
-
         return postRepository.findActivePosts();
     }
 
@@ -160,6 +156,34 @@ public class PostServiceImpl implements PostService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean updatePost(PostRequest postRequest, Integer postId, Principal principal) {
+        if (checkValidPostRequest(postRequest)) {
+            Post postRepositoryById = postRepository.findPostById(postId);
+            if (postRepository == null)
+                return false;
+            if (postRequest.getTimestamp() < System.currentTimeMillis()) {
+                setPostTime(postRepositoryById, System.currentTimeMillis());
+            } else {
+                setPostTime(postRepositoryById, postRequest.getTimestamp());
+            }
+            postRepositoryById.setIsActive(postRequest.getActive() == 1);
+            postRepositoryById.setTitle(postRequest.getTitle());
+            postRepositoryById.setText(postRequest.getText());
+            postRepository.save(postRepositoryById);
+            postRepositoryById.setTags(tagInPostService.addTagsToPost(
+                    postRepositoryById, tagService.getTags(postRequest.getTags())
+            ));
+            Boolean userIsModerator = userRepository.findByEmail(principal.getName()).getIsModerator();
+            if (!userIsModerator) {
+                postRepositoryById.setModerationStatus(Status.NEW);
+            }
+            postRepository.save(postRepositoryById);
+            return true;
+        } else
+            return false;
     }
 
     @Override

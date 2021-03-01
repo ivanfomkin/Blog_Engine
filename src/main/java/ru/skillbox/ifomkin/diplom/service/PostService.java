@@ -11,7 +11,7 @@ public interface PostService {
 
     List<Post> findAll();
 
-    Post findById(int id, Principal principal);
+    Post findById(Integer id, Principal principal);
 
     List<Post> findValidPosts();
 
@@ -30,6 +30,8 @@ public interface PostService {
     Integer countByModerationStatus(Status status);
 
     boolean createPost(PostRequest postRequest, Principal principal);
+
+    boolean updatePost(PostRequest postRequest, Integer postId, Principal principal);
 
     void setPostTime(Post post, long time);
 
