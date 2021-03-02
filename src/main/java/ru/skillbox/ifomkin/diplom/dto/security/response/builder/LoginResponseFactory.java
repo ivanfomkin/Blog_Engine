@@ -6,6 +6,9 @@ import ru.skillbox.ifomkin.diplom.service.PostService;
 
 public class LoginResponseFactory {
     public static LoginResponse getLoginResponse(boolean result, User user, PostService service) {
-        return new LoginResponse(result, SecurityUserResponseFactory.getUserSecurityResponse(user, service));
+        return new LoginResponse(result,
+                result ?
+                        SecurityUserResponseFactory.getUserSecurityResponse(user, service)
+                        : null);
     }
 }
