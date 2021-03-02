@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.unit.DataSize;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skillbox.ifomkin.diplom.config.StorageConfig;
-import ru.skillbox.ifomkin.diplom.exception.IllegalExtensionException;
-import ru.skillbox.ifomkin.diplom.exception.IllegalSizeException;
-import ru.skillbox.ifomkin.diplom.exception.StorageException;
+import ru.skillbox.ifomkin.diplom.exception.storage.IllegalExtensionException;
+import ru.skillbox.ifomkin.diplom.exception.storage.IllegalSizeException;
+import ru.skillbox.ifomkin.diplom.exception.storage.StorageException;
 import ru.skillbox.ifomkin.diplom.service.StorageService;
 import ru.skillbox.ifomkin.diplom.utils.RandomStringGenerator;
 

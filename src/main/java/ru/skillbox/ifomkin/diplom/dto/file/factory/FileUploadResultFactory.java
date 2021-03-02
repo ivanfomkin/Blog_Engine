@@ -2,8 +2,8 @@ package ru.skillbox.ifomkin.diplom.dto.file.factory;
 
 import ru.skillbox.ifomkin.diplom.dto.file.response.FileUploadErrorResponse;
 import ru.skillbox.ifomkin.diplom.dto.file.response.FileUploadResult;
-import ru.skillbox.ifomkin.diplom.exception.IllegalExtensionException;
-import ru.skillbox.ifomkin.diplom.exception.IllegalSizeException;
+import ru.skillbox.ifomkin.diplom.exception.storage.IllegalExtensionException;
+import ru.skillbox.ifomkin.diplom.exception.storage.IllegalSizeException;
 
 public class FileUploadResultFactory {
     public static FileUploadResult getFileUploadResult(Exception e) {

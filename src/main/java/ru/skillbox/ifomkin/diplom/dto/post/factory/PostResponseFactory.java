@@ -1,5 +1,6 @@
 package ru.skillbox.ifomkin.diplom.dto.post.factory;
 
+import ru.skillbox.ifomkin.diplom.dto.comment.factory.CommentResponseFactory;
 import ru.skillbox.ifomkin.diplom.dto.post.request.PostRequest;
 import ru.skillbox.ifomkin.diplom.dto.post.response.FullPostResponse;
 import ru.skillbox.ifomkin.diplom.dto.post.response.PostAddErrorResponse;
@@ -30,7 +31,7 @@ public class PostResponseFactory {
                 10,
                 post.getComments().size(),
                 post.getViewCount(),
-                new ArrayList<>(),
+                CommentResponseFactory.buildCommentsResponse(post),
                 getTagsFromTagInPost(post.getTags()));
     }
 

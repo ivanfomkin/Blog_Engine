@@ -1,4 +1,4 @@
-package ru.skillbox.ifomkin.diplom.exception;
+package ru.skillbox.ifomkin.diplom.exception.storage;
 
 public class IllegalExtensionException extends StorageException{
     public IllegalExtensionException(String message) {

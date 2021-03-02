@@ -1,4 +1,4 @@
-package ru.skillbox.ifomkin.diplom.exception;
+package ru.skillbox.ifomkin.diplom.exception.storage;
 
 public class IllegalSizeException extends StorageException{
     public IllegalSizeException(String message) {
