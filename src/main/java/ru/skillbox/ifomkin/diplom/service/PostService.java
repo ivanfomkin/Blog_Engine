@@ -8,26 +8,35 @@ import java.security.Principal;
 import java.util.List;
 
 public interface PostService {
+    List<Post> findPublishedPosts(int offset, int limit, String mode);
 
-    List<Post> findAll();
+    Integer getCountOfPublishedPosts();
 
-    Post findById(Integer id, Principal principal);
+    Integer countByModerationStatus(Status status);
 
-    List<Post> findValidPosts();
+    List<Post> searchPosts(int offset, int limit, String query);
 
-    List<Post> searchPosts(String query);
+    Integer searchedPostsCount(String query);
 
-    List<Post> findByDate(String date);
+    List<Post> findPublishedPostsByDate(int offset, int limit, String date);
 
-    List<Post> findByTag(String tag);
+    Integer getCountOfPublishedPostsByDate(String date);
 
-    List<Post> findByStatusForModerator(String status, Principal principal);
+    Integer getCountOfPublishedPostsByTag(String tag);
 
-    List<Post> findByStatusForUser(String status, Principal principal);
+    List<Post> findPublishedPostsByTag(int offset, int limit, String tag);
+
+    Post findById(int id, Principal principal);
 
     void incrementViewCount(Post post);
 
-    Integer countByModerationStatus(Status status);
+    List<Post> findByStatusForModerator(String status, Principal principal, int offset, int limit);
+
+    Integer getCountOfPostsForModeration(String status, Principal principal);
+
+    List<Post> findByStatusForUser(String status, Principal principal, int offset, int limit);
+
+    Integer getCountOfPostsByStatusForUser(String status, Principal principal);
 
     boolean createPost(PostRequest postRequest, Principal principal);
 

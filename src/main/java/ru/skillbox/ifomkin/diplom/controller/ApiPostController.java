@@ -11,6 +11,7 @@ import ru.skillbox.ifomkin.diplom.model.Post;
 import ru.skillbox.ifomkin.diplom.service.PostService;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/post")
@@ -28,7 +29,8 @@ public class ApiPostController {
             @RequestParam(required = false, defaultValue = "20") Integer limit,
             @RequestParam(required = false, defaultValue = "recent") String mode) {
         return ResponseEntity.ok(PostListResponseFactory
-                .getPosts(postService.findValidPosts(), offset, limit, mode));
+                .getPosts(postService.getCountOfPublishedPosts(),
+                        postService.findPublishedPosts(offset, limit, mode)));
     }
 
     @GetMapping("/search")
@@ -37,8 +39,10 @@ public class ApiPostController {
             @RequestParam(required = false, defaultValue = "20") Integer limit,
             @RequestParam(required = false, defaultValue = "") String query
     ) {
+        List<Post> posts = postService.searchPosts(offset, limit, query);
         return ResponseEntity.ok(PostListResponseFactory
-                .getPosts(postService.searchPosts(query), offset, limit, query));
+                .getPosts(postService.searchedPostsCount(query),
+                        posts));
     }
 
     @GetMapping("/{id}")
@@ -59,7 +63,8 @@ public class ApiPostController {
             @RequestParam(required = false, defaultValue = "") String date
     ) {
         return ResponseEntity.ok(PostListResponseFactory
-                .getElementsWithLimit(postService.findByDate(date), offset, limit));
+                .getPosts(postService.getCountOfPublishedPostsByDate(date),
+                        postService.findPublishedPostsByDate(offset, limit, date)));
     }
 
     @GetMapping("/byTag")
@@ -69,7 +74,8 @@ public class ApiPostController {
             @RequestParam(required = false, defaultValue = "") String tag
     ) {
         return ResponseEntity.ok(PostListResponseFactory
-                .getElementsWithLimit(postService.findByTag(tag), limit, offset));
+                .getPosts(postService.getCountOfPublishedPostsByTag(tag),
+                        postService.findPublishedPostsByTag(offset, limit, tag)));
     }
 
     @PreAuthorize("hasAuthority('user:moderate')")
@@ -80,11 +86,9 @@ public class ApiPostController {
             @RequestParam(required = false, defaultValue = "") String status,
             Principal principal
     ) {
-        String mode = "early";
-        if (status.equals("accepted"))
-            mode = "recent";
         return ResponseEntity.ok(PostListResponseFactory
-                .getPosts(postService.findByStatusForModerator(status, principal), offset, limit, mode));
+                .getPosts(postService.getCountOfPostsForModeration(status, principal),
+                        postService.findByStatusForModerator(status, principal, offset, limit)));
     }
 
     @PreAuthorize("hasAuthority('user:write')")
@@ -94,9 +98,9 @@ public class ApiPostController {
             @RequestParam(required = false, defaultValue = "10") Integer limit,
             @RequestParam(required = false, defaultValue = "") String status,
             Principal principal) {
-        String mode = "recent";
         return ResponseEntity.ok(PostListResponseFactory
-                .getPosts(postService.findByStatusForUser(status, principal), offset, limit, mode));
+                .getPosts(postService.getCountOfPostsByStatusForUser(status, principal),
+                        postService.findByStatusForUser(status, principal, offset, limit)));
     }
 
     @PreAuthorize("hasAuthority('user:write')")

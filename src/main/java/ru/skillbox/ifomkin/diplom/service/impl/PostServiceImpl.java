@@ -1,10 +1,12 @@
 package ru.skillbox.ifomkin.diplom.service.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.skillbox.ifomkin.diplom.dto.post.request.PostRequest;
 import ru.skillbox.ifomkin.diplom.model.Post;
-import ru.skillbox.ifomkin.diplom.model.TagInPost;
 import ru.skillbox.ifomkin.diplom.model.User;
 import ru.skillbox.ifomkin.diplom.model.enumerated.Status;
 import ru.skillbox.ifomkin.diplom.repository.PostRepository;
@@ -16,11 +18,8 @@ import ru.skillbox.ifomkin.diplom.service.TagService;
 
 import java.security.Principal;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -40,12 +39,29 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> findAll() {
-        return postRepository.findAll();
+    public List<Post> findPublishedPosts(int offset, int limit, String mode) {
+        Pageable pageable = PageRequest.of(offset / limit, limit);
+        switch (mode) {
+            case "recent":
+                return postRepository.findRecentPublishedPosts(pageable);
+            case "popular":
+                return postRepository.findPopularPublishedPosts(pageable);
+            case "best":
+                return postRepository.findBestPublishedPosts(pageable);
+            case "early":
+                return postRepository.findEarlyPublishedPosts(pageable);
+            default:
+                throw new IllegalArgumentException("Illegal mode: " + mode);
+        }
     }
 
     @Override
-    public Post findById(Integer id,
+    public Integer getCountOfPublishedPosts() {
+        return postRepository.countAllPublishedPosts();
+    }
+
+    @Override
+    public Post findById(int id,
                          Principal principal) {
         User user = principal == null ? null : userRepository.findByEmail(principal.getName());
         Post post = postRepository.findPostById(id);
@@ -56,70 +72,131 @@ public class PostServiceImpl implements PostService {
                 incrementViewCount(post);
             }
         }
+        if (!post.getIsActive() || !post.getModerationStatus().equals(Status.ACCEPTED)) {
+            if (user == null) {
+                return null;
+            } else if (user.getIsModerator() || post.getUser().equals(user)) {
+                return post;
+            } else {
+                return null;
+            }
+        }
         return post;
     }
 
     @Override
-    public List<Post> findValidPosts() {
-        return postRepository.findActivePosts();
+    public Integer getCountOfPublishedPostsByTag(String tag) {
+        return postRepository.countPostsByTag(tag.toUpperCase());
     }
 
     @Override
-    public List<Post> searchPosts(String query) {
-        return postRepository.searchValidPosts(query.toLowerCase());
+    public List<Post> findPublishedPostsByTag(int offset, int limit, String tag) {
+        return postRepository.findPostsByTag(tag.toUpperCase(), PageRequest.of(offset / limit, limit));
     }
 
     @Override
-    public List<Post> findByDate(String date) {
-        LocalDate localDate = LocalDate.parse(date);
-        return findValidPosts().stream()
-                .filter(post -> post.getTime().equals(localDate))
-                .collect(Collectors.toList());
+    public List<Post> searchPosts(int offset, int limit, String query) {
+        PageRequest pageable = PageRequest.of(offset / limit, limit);
+        if (StringUtils.isBlank(query)) {
+            return postRepository.findRecentPublishedPosts(pageable);
+        } else {
+            return postRepository.searchPosts(query.toLowerCase(), pageable);
+        }
     }
 
     @Override
-    public List<Post> findByTag(String tag) {
-        return tagInPostRepository.findByTag(tag).stream()
-                .map(TagInPost::getPost)
-                .filter(post -> post.getTime().isBefore(LocalDateTime.now()))
-                .collect(Collectors.toList());
+    public Integer searchedPostsCount(String query) {
+        if (StringUtils.isBlank(query)) {
+            return postRepository.countAllPublishedPosts();
+        } else {
+            return postRepository.countAllSearchedPosts(query);
+        }
     }
 
     @Override
-    public List<Post> findByStatusForModerator(String status, Principal principal) {
+    public List<Post> findPublishedPostsByDate(int offset, int limit, String date) {
+        return postRepository.findPublishedPostsByDate(date, PageRequest.of(offset / limit, limit));
+    }
+
+    @Override
+    public Integer getCountOfPublishedPostsByDate(String date) {
+        return postRepository.countPublishedPostsByDate(date);
+    }
+
+    @Override
+    public List<Post> findByStatusForModerator(String status, Principal principal, int offset, int limit) {
         User user = userRepository.findByEmail(principal.getName());
+        Pageable pageable = PageRequest.of(offset / limit, limit);
         switch (status) {
             case "new":
-                return postRepository.findByModerationStatus(Status.NEW);
+                return postRepository.findPostsByModerationStatusAndIsActive(Status.NEW, true, pageable);
             case "accepted":
-                return postRepository.findByModerationStatusAndAndModerator(
-                        Status.ACCEPTED, user);
+                return postRepository.findPostsByModerationStatusAndModeratorAndIsActiveIsTrue(
+                        Status.ACCEPTED, user, pageable);
             case "declined":
-                return postRepository.findByModerationStatusAndAndModerator(
-                        Status.DECLINED, user);
+                return postRepository.findPostsByModerationStatusAndModeratorAndIsActiveIsTrue(
+                        Status.DECLINED, user, pageable);
             default:
                 return null;
         }
     }
 
     @Override
-    public List<Post> findByStatusForUser(String status, Principal principal) {
+    public Integer getCountOfPostsForModeration(String status, Principal principal) {
+        User user = userRepository.findByEmail(principal.getName());
+        switch (status) {
+            case "new":
+                return postRepository.countByModerationStatusAndIsActiveIsTrue(Status.NEW);
+            case "accepted":
+                return postRepository.countByModerationStatusAndModeratorAndIsActiveIsTrue(
+                        Status.ACCEPTED, user);
+            case "declined":
+                return postRepository.countByModerationStatusAndModeratorAndIsActiveIsTrue(
+                        Status.DECLINED, user);
+            default:
+                return 0;
+        }
+    }
+
+
+    @Override
+    public List<Post> findByStatusForUser(String status, Principal principal, int offset, int limit) {
+        User user = userRepository.findByEmail(principal.getName());
+        Pageable pageable = PageRequest.of(offset / limit, limit);
+        switch (status) {
+            case "inactive":
+                return postRepository.findPostsByUserAndIsActiveFalse(user, pageable);
+            case "pending":
+                return postRepository.findPostsByUserAndModerationStatusAndIsActiveIsTrue(
+                        user, Status.NEW, pageable);
+            case "declined":
+                return postRepository.findPostsByUserAndModerationStatusAndIsActiveIsTrue(
+                        user, Status.DECLINED, pageable);
+            case "published":
+                return postRepository.findPostsByUserAndModerationStatusAndIsActiveIsTrue(
+                        user, Status.ACCEPTED, pageable);
+            default:
+                return null;
+        }
+    }
+
+    @Override
+    public Integer getCountOfPostsByStatusForUser(String status, Principal principal) {
         User user = userRepository.findByEmail(principal.getName());
         switch (status) {
             case "inactive":
-                return postRepository.findByIsActiveAndUser(
-                        false, user);
+                return postRepository.countByUserAndIsActiveFalse(user);
             case "pending":
-                return postRepository.findByIsActiveAndUserAndModerationStatus(
-                        true, user, Status.NEW);
+                return postRepository.countByUserAndModerationStatusAndIsActiveIsTrue(
+                        user, Status.NEW);
             case "declined":
-                return postRepository.findByIsActiveAndUserAndModerationStatus(
-                        true, user, Status.DECLINED);
+                return postRepository.countByUserAndModerationStatusAndIsActiveIsTrue(
+                        user, Status.DECLINED);
             case "published":
-                return postRepository.findByIsActiveAndUserAndModerationStatus(
-                        true, user, Status.ACCEPTED);
+                return postRepository.countByUserAndModerationStatusAndIsActiveIsTrue(
+                        user, Status.ACCEPTED);
             default:
-                return null;
+                return 0;
         }
     }
 

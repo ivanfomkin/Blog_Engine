@@ -5,66 +5,32 @@ import ru.skillbox.ifomkin.diplom.dto.post.response.PostListResponse;
 import ru.skillbox.ifomkin.diplom.dto.post.response.PostResponse;
 import ru.skillbox.ifomkin.diplom.dto.user.UserInPostResponse;
 import ru.skillbox.ifomkin.diplom.model.Post;
+import ru.skillbox.ifomkin.diplom.service.PostService;
 
 import java.time.ZoneOffset;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class PostListResponseFactory {
-    public static PostListResponse getPosts(List<Post> posts, int offset, int limit, String mode) {
-        return new PostListResponse(posts.size(), getPostListResponse(posts, offset, limit, mode));
+    public static PostListResponse getPosts(int postCount, List<Post> posts) {
+        return new PostListResponse(postCount, getPostListResponse(posts));
     }
 
-    private static List<Dto> getPostListResponse(List<Post> posts, int offset, int limit, String mode) {
-        if (mode.equals("recent")) {
-            posts.sort(Comparator.comparing(Post::getTime).reversed());
-        }
-        if (mode.equals("popular")) {
-            posts.sort((
-                    Comparator.comparingInt(post -> post.getComments().size())
-            ));
-        }
-        if (mode.equals("best")) {
-            posts.sort((
-                    Comparator.comparingInt(post ->
-                            (int) post.getVotes().stream()
-                                    .filter(vote -> vote.getValue() == 1).count())
-            ));
-        }
-        if (mode.equals("early")) {
-            posts.sort((
-                    Comparator.comparing(Post::getTime)
-            ));
-        }
-        return getElementsWithLimit(posts, offset, limit)
-                .stream().map(post -> new PostResponse(
-                        post.getId(),
-                        post.getTime().toEpochSecond(ZoneOffset.UTC),
-                        new UserInPostResponse(
-                                post.getUser().getId(),
-                                post.getUser().getName()
-                        ),
-                        post.getTitle(),
-                        post.getText().length() > 250 ? post.getText().substring(0, 250) : post.getText(),
-                        15,
-                        10,
-                        post.getComments().size(),
-                        post.getViewCount()
-                )).collect(Collectors.toList());
-    }
-
-    public static List<Post> getElementsWithLimit(List<Post> list, int offset, int limit) {
-        int lastElementIndex = offset + limit;
-        int lastListIndex = list.size();
-        if (lastListIndex > offset) { //Если есть элементы, входящие в нужный диапазон
-            if (lastElementIndex <= lastListIndex) {
-                return list.subList(offset, lastElementIndex);
-            } else {
-                return list.subList(offset, lastListIndex);
-            }
-        }
-        return new ArrayList<>();
+    private static List<Dto> getPostListResponse(List<Post> posts) {
+        return posts.stream().map(post -> new PostResponse(
+                post.getId(),
+                post.getTime().toEpochSecond(ZoneOffset.UTC),
+                new UserInPostResponse(
+                        post.getUser().getId(),
+                        post.getUser().getName()
+                ),
+                post.getTitle(),
+                post.getText().length() > 250 ? post.getText().substring(0, 250) : post.getText(),
+                15,
+                10,
+                post.getComments().size(),
+                post.getViewCount()
+        )).collect(Collectors.toList());
     }
 }
