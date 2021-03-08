@@ -2,9 +2,11 @@ package ru.skillbox.ifomkin.diplom.repository;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.skillbox.ifomkin.diplom.model.Post;
 import ru.skillbox.ifomkin.diplom.model.User;
 import ru.skillbox.ifomkin.diplom.model.enumerated.Status;
@@ -86,4 +88,9 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     List<Post> findPostsByUserAndModerationStatusAndIsActiveIsTrue(User user, Status status, Pageable pageable);
 
     Integer countByUserAndModerationStatusAndIsActiveIsTrue(User user, Status status);
+
+    @Transactional
+    @Modifying
+    @Query(value = "update Post p set p.viewCount = p.viewCount + 1")
+    void incrementViewCount(Post post);
 }
