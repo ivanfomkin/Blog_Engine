@@ -24,15 +24,13 @@ import java.util.List;
 @Service
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
-    private final TagInPostRepository tagInPostRepository;
     private final UserRepository userRepository;
     private final TagInPostService tagInPostService;
     private final TagService tagService;
 
     @Autowired
-    public PostServiceImpl(PostRepository postRepository, TagInPostRepository tagInPostRepository, UserRepository userRepository, TagInPostService tagInPostService, TagService tagService) {
+    public PostServiceImpl(PostRepository postRepository, UserRepository userRepository, TagInPostService tagInPostService, TagService tagService) {
         this.postRepository = postRepository;
-        this.tagInPostRepository = tagInPostRepository;
         this.userRepository = userRepository;
         this.tagInPostService = tagInPostService;
         this.tagService = tagService;

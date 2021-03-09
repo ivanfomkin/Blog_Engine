@@ -7,7 +7,9 @@ import ru.skillbox.ifomkin.diplom.repository.TagRepository;
 import ru.skillbox.ifomkin.diplom.service.TagService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class TagServiceImpl implements TagService {
@@ -22,7 +24,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public List<Tag> getTags(String[] tagsArray) {
         List<Tag> tags = new ArrayList<>();
-        for (String tagName: tagsArray) {
+        for (String tagName : tagsArray) {
             Tag currentTag = tagRepository.findByName(tagName.toUpperCase());
             if (currentTag == null) {
                 currentTag = new Tag(tagName);
@@ -31,5 +33,30 @@ public class TagServiceImpl implements TagService {
             tags.add(currentTag);
         }
         return tags;
+    }
+
+    @Override
+    public List<String> getAllTags() {
+        return tagRepository.findAllTags();
+    }
+
+    @Override
+    public float getTagWeight(String tag) {
+        Float abnormalWeightForCurrentTag = tagRepository.calculateAbnormalWeightForTag(tag);
+        String mostPopularTag = tagRepository.findMostPopularTag();
+        Float abnormalWeightForPopularTag = tagRepository.calculateAbnormalWeightForTag(mostPopularTag);
+        Float normalizationFactor = 1 / abnormalWeightForPopularTag;
+        Float normalizedWeight = abnormalWeightForCurrentTag * normalizationFactor;
+        return normalizedWeight;
+    }
+
+    @Override
+    public Map<String, Float> getTagMapWithWeight() {
+        Map<String, Float> map = new HashMap<>();
+        List<String> tags = tagRepository.findAllTags();
+        for (String tag : tags) {
+            map.put(tag, getTagWeight(tag));
+        }
+        return map;
     }
 }

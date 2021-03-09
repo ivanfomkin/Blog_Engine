@@ -6,19 +6,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.skillbox.ifomkin.diplom.dto.settings.factory.SettingsResponseFactory;
+import ru.skillbox.ifomkin.diplom.dto.tag.factory.TagResponseFactory;
 import ru.skillbox.ifomkin.diplom.service.BlogInfoService;
 import ru.skillbox.ifomkin.diplom.service.GlobalSettingService;
+import ru.skillbox.ifomkin.diplom.service.TagService;
 
 @RestController
 @RequestMapping("api")
 public class ApiController {
     private final BlogInfoService blogInfoService;
     private final GlobalSettingService globalSettingService;
+    private final TagService tagService;
 
     @Autowired
-    public ApiController(BlogInfoService blogInfoService, GlobalSettingService globalSettingService) {
+    public ApiController(BlogInfoService blogInfoService, GlobalSettingService globalSettingService, TagService tagService) {
         this.blogInfoService = blogInfoService;
         this.globalSettingService = globalSettingService;
+        this.tagService = tagService;
     }
 
     @GetMapping("/init")
@@ -33,19 +37,9 @@ public class ApiController {
     }
 
     @GetMapping("/tag")
-    public String tags() {
-        return "{\n" +
-                " \"tags\":\n" +
-                " [\n" +
-                " {\n" +
-                " \"name\": \"PHP\",\n" +
-                " \"weight\": 1\n" +
-                " },\n" +
-                " {\n" +
-                " \"name\": \"Python\",\n" +
-                " \"weight\": 0.33\n" +
-                " }\n" +
-                " ]\n" +
-                "}\n";
+    public ResponseEntity<?> getTags() {
+        return ResponseEntity.ok(
+                TagResponseFactory.buildTagResponse(tagService.getTagMapWithWeight())
+        );
     }
 }
