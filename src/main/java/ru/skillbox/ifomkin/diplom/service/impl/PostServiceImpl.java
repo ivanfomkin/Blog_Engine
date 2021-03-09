@@ -207,7 +207,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void incrementViewCount(Post post) {
-        postRepository.incrementViewCount(post);
+        postRepository.incrementViewCount(post.getId());
     }
 
     @Override
