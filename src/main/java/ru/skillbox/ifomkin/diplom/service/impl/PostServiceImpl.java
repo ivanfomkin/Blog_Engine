@@ -5,12 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.skillbox.ifomkin.diplom.dto.calendar.response.PostCountByDateFromDb;
 import ru.skillbox.ifomkin.diplom.dto.post.request.PostRequest;
 import ru.skillbox.ifomkin.diplom.model.Post;
 import ru.skillbox.ifomkin.diplom.model.User;
 import ru.skillbox.ifomkin.diplom.model.enumerated.Status;
 import ru.skillbox.ifomkin.diplom.repository.PostRepository;
-import ru.skillbox.ifomkin.diplom.repository.TagInPostRepository;
 import ru.skillbox.ifomkin.diplom.repository.UserRepository;
 import ru.skillbox.ifomkin.diplom.service.PostService;
 import ru.skillbox.ifomkin.diplom.service.TagInPostService;
@@ -18,10 +18,10 @@ import ru.skillbox.ifomkin.diplom.service.TagService;
 
 import java.security.Principal;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -275,5 +275,16 @@ public class PostServiceImpl implements PostService {
     @Override
     public boolean checkValidPostRequest(PostRequest postRequest) {
         return (postRequest.getText().length() > 50) && (postRequest.getTitle().length() > 3);
+    }
+
+    @Override
+    public List<Integer> getYearsWithActivePost() {
+        return postRepository.getYearsWIthActivePosts();
+    }
+
+    @Override
+    public List<PostCountByDateFromDb> getPostCountByDateFromDb(String year) {
+        Integer yearForQuery = year.equals("") ? LocalDate.now().getYear() : Integer.parseInt(year);
+        return postRepository.getPostsCountByDate(yearForQuery);
     }
 }

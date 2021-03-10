@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import ru.skillbox.ifomkin.diplom.dto.calendar.response.PostCountByDateFromDb;
 import ru.skillbox.ifomkin.diplom.model.Post;
 import ru.skillbox.ifomkin.diplom.model.User;
 import ru.skillbox.ifomkin.diplom.model.enumerated.Status;
@@ -93,4 +94,15 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Modifying
     @Query(value = "update Post p set p.viewCount = p.viewCount + 1 where p.id = :id")
     void incrementViewCount(@Param("id") Integer postId);
+
+    @Query(value = "SELECT DISTINCT EXTRACT(YEARS FROM p.time) FROM posts p WHERE " +
+            "p.is_active = 1 AND p.time < NOW() AND p.moderation_status = 'ACCEPTED'",
+            nativeQuery = true)
+    List<Integer> getYearsWIthActivePosts();
+
+    @Query(value = "SELECT DATE(p.time) AS date, COUNT(*) FROM posts p WHERE p.is_active = 1 " +
+            "AND p.time < NOW() AND p.moderation_status = 'ACCEPTED' " +
+            "AND EXTRACT(YEAR from p.time) = :year GROUP BY date", nativeQuery = true)
+    List<PostCountByDateFromDb> getPostsCountByDate(@Param("year") Integer year);
+
 }
