@@ -19,7 +19,9 @@ import ru.skillbox.ifomkin.diplom.service.TagService;
 import java.security.Principal;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -225,7 +227,9 @@ public class PostServiceImpl implements PostService {
             post.setUser(user);
             post.setViewCount(0);
             postRepository.save(post);
-            post.setTags(tagInPostService.addTagsToPost(post, tagService.getTags(postRequest.getTags())));
+            post.setTags(tagInPostService.addTagsToPost(post,
+                    tagService.getTags(Arrays.stream(postRequest.getTags())
+                            .map(String::toUpperCase).toArray(String[]::new))));
             postRepository.save(post);
             return true;
         }
@@ -248,7 +252,7 @@ public class PostServiceImpl implements PostService {
             postRepositoryById.setText(postRequest.getText());
             postRepository.save(postRepositoryById);
             postRepositoryById.setTags(tagInPostService.addTagsToPost(
-                    postRepositoryById, tagService.getTags(postRequest.getTags())
+                    postRepositoryById, tagService.getTags(Arrays.stream(postRequest.getTags()).map(String::toUpperCase).toArray(String[]::new))
             ));
             Boolean userIsModerator = userRepository.findByEmail(principal.getName()).getIsModerator();
             if (!userIsModerator) {
