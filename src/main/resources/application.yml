@@ -26,3 +26,6 @@ blog:
 storage:
   location: upload
   max-file-size: 10MB
+
+captcha:
+  length: 5

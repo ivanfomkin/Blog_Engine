@@ -12,6 +12,7 @@ import ru.skillbox.ifomkin.diplom.dto.security.request.LoginsRequest;
 import ru.skillbox.ifomkin.diplom.dto.security.response.builder.LoginResponseFactory;
 import ru.skillbox.ifomkin.diplom.model.User;
 import ru.skillbox.ifomkin.diplom.service.AuthService;
+import ru.skillbox.ifomkin.diplom.service.CaptchaService;
 import ru.skillbox.ifomkin.diplom.service.PostService;
 import ru.skillbox.ifomkin.diplom.service.UserService;
 
@@ -26,12 +27,14 @@ public class ApiAuthController {
     private final UserService userService;
     private final AuthService authService;
     private final PostService postService;
+    private final CaptchaService captchaService;
 
     @Autowired
-    public ApiAuthController(UserService userService, AuthService authService, PostService postService) {
+    public ApiAuthController(UserService userService, AuthService authService, PostService postService, CaptchaService captchaService) {
         this.userService = userService;
         this.authService = authService;
         this.postService = postService;
+        this.captchaService = captchaService;
     }
 
     @PostMapping("/login")
@@ -64,5 +67,10 @@ public class ApiAuthController {
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
         authService.logout(request, response);
         return ResponseEntity.ok(LoginResponseFactory.getLoginResponse(true, null, postService));
+    }
+
+    @GetMapping("/captcha")
+    public ResponseEntity<?> generateCaptcha() {
+        return ResponseEntity.ok(captchaService.getCaptchaResponse());
     }
 }
