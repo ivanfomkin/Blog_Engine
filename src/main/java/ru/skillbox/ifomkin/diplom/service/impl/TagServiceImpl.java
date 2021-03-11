@@ -48,7 +48,7 @@ public class TagServiceImpl implements TagService {
             resultList.add(
                     new TagWithWeightResponse(
                             tag.getName(),
-                            tag.getWeight() < 0.25f ? 0.25f : tag.getWeight()
+                            tag.getWeight()
                     )
             );
         }

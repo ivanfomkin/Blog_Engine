@@ -22,8 +22,8 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
             "join posts p2 on p2.id = tag2post.post_id WHERE p2.is_active = 1 AND " +
             "p2.moderation_status = 'ACCEPTED' AND p2.time <= NOW() GROUP BY name, t.id), " +
             "normalizationFactor AS (SELECT CAST(1 AS REAL) / MAX(t.abnormalWeight) AS max " +
-            "FROM TagWithWeight t) SELECT tag.name, (tag.abnormalWeight * normalizationFactor.max) " +
-            "AS weight FROM TagWithWeight tag, normalizationFactor WHERE tag.name " +
-            "LIKE %:query%", nativeQuery = true)
+            "FROM TagWithWeight t) SELECT tag.name, CASE WHEN (tag.abnormalWeight * normalizationFactor.max) < 0.25 " +
+            "THEN 0.25 ELSE (tag.abnormalWeight * normalizationFactor.max) END AS weight FROM " +
+            "TagWithWeight tag, normalizationFactor WHERE tag.name LIKE %:query%", nativeQuery = true)
     List<TagWithWeightFromDb> findTagsWithAbnormalWeight(@Param("query") String query);
 }
