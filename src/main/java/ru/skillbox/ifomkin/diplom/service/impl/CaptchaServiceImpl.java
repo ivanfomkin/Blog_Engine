@@ -18,9 +18,12 @@ import java.util.Base64;
 @Service
 public class CaptchaServiceImpl implements CaptchaService {
     private final CaptchaRepository captchaRepository;
+    private final String DATA_TYPE_PREFIX = "data:image/png;base64, ";
 
     @Value("${captcha.length}")
     private Integer captchaLength;
+    @Value("${captcha.drop-time}")
+    private Integer dropTime;
 
     @Autowired
     public CaptchaServiceImpl(CaptchaRepository captchaRepository) {
@@ -43,8 +46,14 @@ public class CaptchaServiceImpl implements CaptchaService {
         captchaRepository.save(captchaCode);
 
         captchaResponse.setSecret(secretCode);
-        captchaResponse.setImage("data:image/png;base64, " + base64Image);
+        captchaResponse.setImage(DATA_TYPE_PREFIX + base64Image);
+        deleteOldCaptcha();
 
         return captchaResponse;
+    }
+
+    @Override
+    public void deleteOldCaptcha() {
+        captchaRepository.deleteOldCaptcha(dropTime);
     }
 }

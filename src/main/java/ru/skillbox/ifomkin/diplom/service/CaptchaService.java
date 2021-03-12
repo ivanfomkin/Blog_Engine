@@ -4,4 +4,6 @@ import ru.skillbox.ifomkin.diplom.dto.security.response.CaptchaResponse;
 
 public interface CaptchaService {
     CaptchaResponse getCaptchaResponse();
+
+    void deleteOldCaptcha();
 }

@@ -1,7 +1,5 @@
 package ru.skillbox.ifomkin.diplom.utils;
 
-import java.util.Random;
-
 public class RandomStringGenerator {
     private static final String UPPER_CASE_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String LOWER_CASE_ALPHABET = UPPER_CASE_ALPHABET.toLowerCase();

@@ -29,3 +29,5 @@ storage:
 
 captcha:
   length: 5
+  #in minutes
+  drop-time: 60
