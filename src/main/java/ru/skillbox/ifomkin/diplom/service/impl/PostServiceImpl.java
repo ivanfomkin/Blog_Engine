@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.skillbox.ifomkin.diplom.dto.calendar.response.PostCountByDateFromDb;
+import ru.skillbox.ifomkin.diplom.dto.post.request.ModeratePostRequest;
 import ru.skillbox.ifomkin.diplom.dto.post.request.PostRequest;
 import ru.skillbox.ifomkin.diplom.model.Post;
 import ru.skillbox.ifomkin.diplom.model.User;
@@ -286,5 +287,23 @@ public class PostServiceImpl implements PostService {
     public List<PostCountByDateFromDb> getPostCountByDateFromDb(String year) {
         Integer yearForQuery = year.equals("") ? LocalDate.now().getYear() : Integer.parseInt(year);
         return postRepository.getPostsCountByDate(yearForQuery);
+    }
+
+    @Override
+    public boolean moderatePost(ModeratePostRequest request, Principal principal) {
+        Post post = postRepository.findPostById(request.getPostId());
+        User moderator = userRepository.findByEmail(principal.getName());
+        if (post == null || moderator == null) {
+            return false;
+        } else {
+            if (request.getDecision().equalsIgnoreCase("accept")) {
+                post.setModerationStatus(Status.ACCEPTED);
+            } else {
+                post.setModerationStatus(Status.DECLINED);
+            }
+            post.setModerator(moderator);
+            postRepository.save(post);
+            return true;
+        }
     }
 }

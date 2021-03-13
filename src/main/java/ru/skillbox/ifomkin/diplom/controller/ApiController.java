@@ -2,17 +2,19 @@ package ru.skillbox.ifomkin.diplom.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 import ru.skillbox.ifomkin.diplom.dto.calendar.factory.CalendarResponseFactory;
+import ru.skillbox.ifomkin.diplom.dto.post.factory.ModerateResponseFactory;
+import ru.skillbox.ifomkin.diplom.dto.post.request.ModeratePostRequest;
 import ru.skillbox.ifomkin.diplom.dto.settings.factory.SettingsResponseFactory;
 import ru.skillbox.ifomkin.diplom.dto.tag.factory.TagResponseFactory;
 import ru.skillbox.ifomkin.diplom.service.BlogInfoService;
 import ru.skillbox.ifomkin.diplom.service.GlobalSettingService;
 import ru.skillbox.ifomkin.diplom.service.PostService;
 import ru.skillbox.ifomkin.diplom.service.TagService;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("api")
@@ -58,5 +60,16 @@ public class ApiController {
                 postService.getYearsWithActivePost(),
                 postService.getPostCountByDateFromDb(year)
         ));
+    }
+
+    @PreAuthorize("hasAuthority('user:moderate')")
+    @PostMapping("/moderation")
+    public ResponseEntity<?> moderatePost(
+            @RequestBody ModeratePostRequest request,
+            Principal principal
+    ) {
+        return ResponseEntity.ok(
+                ModerateResponseFactory.buildResponse(
+                        postService.moderatePost(request, principal)));
     }
 }

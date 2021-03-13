@@ -1,6 +1,7 @@
 package ru.skillbox.ifomkin.diplom.service;
 
 import ru.skillbox.ifomkin.diplom.dto.calendar.response.PostCountByDateFromDb;
+import ru.skillbox.ifomkin.diplom.dto.post.request.ModeratePostRequest;
 import ru.skillbox.ifomkin.diplom.dto.post.request.PostRequest;
 import ru.skillbox.ifomkin.diplom.model.Post;
 import ru.skillbox.ifomkin.diplom.model.enumerated.Status;
@@ -50,4 +51,6 @@ public interface PostService {
     List<Integer> getYearsWithActivePost();
 
     List<PostCountByDateFromDb> getPostCountByDateFromDb(String year);
+
+    boolean moderatePost(ModeratePostRequest request, Principal principal);
 }
