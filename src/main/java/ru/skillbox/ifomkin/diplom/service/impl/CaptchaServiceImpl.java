@@ -58,6 +58,5 @@ public class CaptchaServiceImpl implements CaptchaService {
     @Scheduled(cron = "0 */30 * ? * *")
     public void deleteOldCaptcha() {
         captchaRepository.deleteOldCaptcha(dropTime);
-        System.out.println(LocalDateTime.now(ZoneId.systemDefault()) + "Коды капчи были удалены");
     }
 }
