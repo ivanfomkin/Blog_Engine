@@ -26,8 +26,6 @@ public class CommentResponseFactory {
             response.setId(commentService.addComment(request, principal));
             return ResponseEntity.ok(response);
         } catch (PostNotFoundException e) {
-            System.out.println(request);
-            System.out.println(e.getMessage());
             return ResponseEntity.badRequest().build();
         } catch (CommentLengthException e) {
             response.setResult(false);
