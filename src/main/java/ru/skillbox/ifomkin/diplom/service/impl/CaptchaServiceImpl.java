@@ -4,6 +4,8 @@ import com.github.cage.Cage;
 import com.github.cage.GCage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ru.skillbox.ifomkin.diplom.dto.security.response.CaptchaResponse;
 import ru.skillbox.ifomkin.diplom.model.CaptchaCode;
@@ -16,6 +18,7 @@ import java.time.ZoneId;
 import java.util.Base64;
 
 @Service
+@EnableScheduling
 public class CaptchaServiceImpl implements CaptchaService {
     private final CaptchaRepository captchaRepository;
     private final String DATA_TYPE_PREFIX = "data:image/png;base64, ";
@@ -47,13 +50,14 @@ public class CaptchaServiceImpl implements CaptchaService {
 
         captchaResponse.setSecret(secretCode);
         captchaResponse.setImage(DATA_TYPE_PREFIX + base64Image);
-        deleteOldCaptcha();
 
         return captchaResponse;
     }
 
     @Override
+    @Scheduled(cron = "0 */30 * ? * *")
     public void deleteOldCaptcha() {
         captchaRepository.deleteOldCaptcha(dropTime);
+        System.out.println(LocalDateTime.now(ZoneId.systemDefault()) + "Коды капчи были удалены");
     }
 }
