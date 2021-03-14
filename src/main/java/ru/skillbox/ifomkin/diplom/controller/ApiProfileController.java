@@ -1,13 +1,10 @@
 package ru.skillbox.ifomkin.diplom.controller;
 
-import net.bytebuddy.implementation.auxiliary.AuxiliaryType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.skillbox.ifomkin.diplom.dto.pofile.request.ProfileEditRequest;
 import ru.skillbox.ifomkin.diplom.service.UserService;
 
@@ -23,8 +20,19 @@ public class ApiProfileController {
         this.service = service;
     }
 
-    @PostMapping("/my")
-    public ResponseEntity<?> editProfile(@ModelAttribute ProfileEditRequest request, Principal principal) {
-        return ResponseEntity.ok(service.editUser(request, principal));
+    @PostMapping(value = "/my", consumes = "multipart/form-data")
+    public ResponseEntity<?> editProfileWithPhoto(
+            @ModelAttribute ProfileEditRequest requestWithPhoto,
+            @RequestPart(required = false) MultipartFile photo,
+            Principal principal) {
+        return ResponseEntity.ok(service.editUser(requestWithPhoto, principal, photo));
+    }
+
+    @PostMapping(value = "/my", consumes = "application/json")
+    public ResponseEntity<?> editProfile(
+            @RequestBody ProfileEditRequest request,
+            @RequestPart(required = false) String photo,
+            Principal principal) {
+        return ResponseEntity.ok(service.editUser(request, principal, null));
     }
 }

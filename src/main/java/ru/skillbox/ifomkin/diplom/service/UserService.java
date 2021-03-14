@@ -1,5 +1,6 @@
 package ru.skillbox.ifomkin.diplom.service;
 
+import org.springframework.web.multipart.MultipartFile;
 import ru.skillbox.ifomkin.diplom.dto.Dto;
 import ru.skillbox.ifomkin.diplom.dto.pofile.request.ProfileEditRequest;
 import ru.skillbox.ifomkin.diplom.dto.pofile.response.ProfileEditResponse;
@@ -17,7 +18,7 @@ public interface UserService {
 
     User findByEmail(String email);
 
-    ProfileEditResponse editUser(ProfileEditRequest request, Principal principal);
+    ProfileEditResponse editUser(ProfileEditRequest request, Principal principal, MultipartFile photo);
 
     RegisterResponse registerUser(RegisterRequest request);
 

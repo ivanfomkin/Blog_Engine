@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.unit.DataSize;
+import org.springframework.web.multipart.MultipartFile;
 import ru.skillbox.ifomkin.diplom.dto.pofile.request.ProfileEditRequest;
 import ru.skillbox.ifomkin.diplom.dto.pofile.response.ProfileEditErrors;
 import ru.skillbox.ifomkin.diplom.dto.pofile.response.ProfileEditResponse;
@@ -33,8 +34,7 @@ public class UserServiceImpl implements UserService {
     private final CaptchaRepository captchaRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository repository, StorageService storageService) {
-    public UserServiceImpl(UserRepository repository, CaptchaRepository captchaRepository) {
+    public UserServiceImpl(UserRepository repository, StorageService storageService, CaptchaRepository captchaRepository) {
         this.repository = repository;
         this.storageService = storageService;
         this.captchaRepository = captchaRepository;
@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ProfileEditResponse editUser(ProfileEditRequest request, Principal principal) {
+    public ProfileEditResponse editUser(ProfileEditRequest request, Principal principal, MultipartFile photo) {
         ProfileEditResponse response = new ProfileEditResponse();
         ProfileEditErrors editErrors = new ProfileEditErrors();
         response.setResult(true);
@@ -72,13 +72,19 @@ public class UserServiceImpl implements UserService {
             }
         }
         if (request.getPassword() != null) {
-            if (request.getPassword().length() < 6) {
+            if (!this.checkValidPassword(request.getPassword())) {
                 editErrors.setPassword("Пароль короче 6-ти символов");
                 response.setResult(false);
             }
         }
-        if (request.getPhoto() != null) {
-            if (request.getPhoto().getSize() > maxFileSize.toBytes()) {
+        if (request.getName() != null) {
+            if (!this.checkValidUserName(request.getName())) {
+                editErrors.setName("Имя введено неправильно");
+                response.setResult(false);
+            }
+        }
+        if (photo != null) {
+            if (photo.getSize() > maxFileSize.toBytes()) {
                 editErrors.setPhoto("Размер фото превышает " + maxFileSize.toMegabytes() + " МБ");
                 response.setResult(false);
             }
@@ -97,11 +103,11 @@ public class UserServiceImpl implements UserService {
                 user.setEmail(request.getEmail());
             }
             if (request.getPassword() != null) {
-                user.setPassword(request.getPassword());
+                user.setPassword(new BCryptPasswordEncoder(12).encode(request.getPassword()));
             }
-            if (request.getPhoto() != null) {
+            if (photo != null) {
                 try {
-                    user.setPhoto(storageService.resizeAndSaveImage(request.getPhoto()));
+                    user.setPhoto(storageService.resizeAndSaveImage(photo));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
