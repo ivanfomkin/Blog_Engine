@@ -5,6 +5,8 @@ import ru.skillbox.ifomkin.diplom.dto.Dto;
 import ru.skillbox.ifomkin.diplom.dto.pofile.request.ProfileEditRequest;
 import ru.skillbox.ifomkin.diplom.dto.pofile.response.ProfileEditResponse;
 import ru.skillbox.ifomkin.diplom.dto.security.request.RegisterRequest;
+import ru.skillbox.ifomkin.diplom.dto.security.request.RestorePasswordRequest;
+import ru.skillbox.ifomkin.diplom.dto.security.response.LoginResponse;
 import ru.skillbox.ifomkin.diplom.dto.security.response.RegisterResponse;
 import ru.skillbox.ifomkin.diplom.model.User;
 
@@ -25,4 +27,8 @@ public interface UserService {
     Boolean checkValidUserName(String username);
 
     Boolean checkValidPassword(String password);
+
+    LoginResponse restorePassword(RestorePasswordRequest request);
+
+    String generatePasswordRestoreHash();
 }

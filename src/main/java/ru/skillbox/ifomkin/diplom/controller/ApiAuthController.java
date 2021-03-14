@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.skillbox.ifomkin.diplom.dto.security.request.LoginsRequest;
 import ru.skillbox.ifomkin.diplom.dto.security.request.RegisterRequest;
+import ru.skillbox.ifomkin.diplom.dto.security.request.RestorePasswordRequest;
 import ru.skillbox.ifomkin.diplom.dto.security.response.builder.LoginResponseFactory;
 import ru.skillbox.ifomkin.diplom.model.User;
 import ru.skillbox.ifomkin.diplom.service.AuthService;
@@ -82,5 +83,10 @@ public class ApiAuthController {
         } else {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @PostMapping("/restore")
+    public ResponseEntity<?> restorePassword(@RequestBody RestorePasswordRequest request) {
+        return ResponseEntity.ok(userService.restorePassword(request));
     }
 }

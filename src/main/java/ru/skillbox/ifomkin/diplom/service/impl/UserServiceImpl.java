@@ -10,11 +10,14 @@ import ru.skillbox.ifomkin.diplom.dto.pofile.request.ProfileEditRequest;
 import ru.skillbox.ifomkin.diplom.dto.pofile.response.ProfileEditErrors;
 import ru.skillbox.ifomkin.diplom.dto.pofile.response.ProfileEditResponse;
 import ru.skillbox.ifomkin.diplom.dto.security.request.RegisterRequest;
+import ru.skillbox.ifomkin.diplom.dto.security.request.RestorePasswordRequest;
+import ru.skillbox.ifomkin.diplom.dto.security.response.LoginResponse;
 import ru.skillbox.ifomkin.diplom.dto.security.response.RegisterErrorResponse;
 import ru.skillbox.ifomkin.diplom.dto.security.response.RegisterResponse;
 import ru.skillbox.ifomkin.diplom.model.User;
 import ru.skillbox.ifomkin.diplom.repository.CaptchaRepository;
 import ru.skillbox.ifomkin.diplom.repository.UserRepository;
+import ru.skillbox.ifomkin.diplom.service.EmailService;
 import ru.skillbox.ifomkin.diplom.service.StorageService;
 import ru.skillbox.ifomkin.diplom.service.UserService;
 
@@ -23,35 +26,38 @@ import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private final UserRepository repository;
+    private final UserRepository userRepository;
     private final StorageService storageService;
+    private final EmailService emailService;
 
     @Value("${storage.max-file-size}")
     private DataSize maxFileSize;
     private final CaptchaRepository captchaRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository repository, StorageService storageService, CaptchaRepository captchaRepository) {
-        this.repository = repository;
+    public UserServiceImpl(UserRepository userRepository, StorageService storageService, EmailService emailService, CaptchaRepository captchaRepository) {
+        this.userRepository = userRepository;
         this.storageService = storageService;
+        this.emailService = emailService;
         this.captchaRepository = captchaRepository;
     }
 
     public List<User> getAll() {
-        return repository.findAll();
+        return userRepository.findAll();
     }
 
     @Override
     public Boolean isExists(String email) {
-        return repository.existsByEmail(email);
+        return userRepository.existsByEmail(email);
     }
 
     @Override
     public User findByEmail(String email) {
-        return repository.findByEmail(email);
+        return userRepository.findByEmail(email);
     }
 
     @Override
@@ -60,12 +66,12 @@ public class UserServiceImpl implements UserService {
         ProfileEditErrors editErrors = new ProfileEditErrors();
         response.setResult(true);
 
-        User user = repository.findByEmail(principal.getName());
+        User user = userRepository.findByEmail(principal.getName());
         if (user == null) {
             response.setResult(false);
         }
         if (request.getEmail() != null) {
-            if (repository.existsByEmail(request.getEmail())
+            if (userRepository.existsByEmail(request.getEmail())
                     && !user.getEmail().equalsIgnoreCase(request.getEmail())) {
                 editErrors.setEmail("Этот email уже зарегестрирован");
                 response.setResult(false);
@@ -117,7 +123,7 @@ public class UserServiceImpl implements UserService {
             if (request.getRemovePhoto() != null && request.getRemovePhoto() == 1) {
                 user.setPhoto("");
             }
-            repository.save(user);
+            userRepository.save(user);
         }
         return response;
     }
@@ -129,7 +135,7 @@ public class UserServiceImpl implements UserService {
 
         RegisterErrorResponse errors = new RegisterErrorResponse();
 
-        if (repository.existsByEmail(request.getEmail().toLowerCase())) {
+        if (userRepository.existsByEmail(request.getEmail().toLowerCase())) {
             response.setResult(false);
             errors.setEmail("Пользователь с таким email уже зарегистрирован");
         }
@@ -154,7 +160,7 @@ public class UserServiceImpl implements UserService {
             user.setRegTime(LocalDateTime.now(ZoneId.systemDefault()));
             user.setPassword(new BCryptPasswordEncoder(12).encode(request.getPassword()));
             user.setIsModerator(false);
-            repository.save(user);
+            userRepository.save(user);
         } else {
             response.setErrors(errors);
         }
@@ -173,5 +179,29 @@ public class UserServiceImpl implements UserService {
     @Override
     public Boolean checkValidPassword(String password) {
         return password.length() >= 6;
+    }
+
+    @Override
+    public LoginResponse restorePassword(RestorePasswordRequest request) {
+        LoginResponse response = new LoginResponse();
+        String email = request.getEmail();
+        if (this.isExists(email)) {
+            String hash = this.generatePasswordRestoreHash();
+
+            User user = userRepository.findByEmail(email);
+            user.setCode(hash);
+            userRepository.save(user);
+
+            emailService.sendRestorePasswordMessage(email, hash);
+            response.setResult(true);
+        } else {
+            response.setResult(false);
+        }
+        return response;
+    }
+
+    @Override
+    public String generatePasswordRestoreHash() {
+        return UUID.randomUUID().toString().replaceAll("-", "");
     }
 }

@@ -2,6 +2,7 @@ package ru.skillbox.ifomkin.diplom.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +21,7 @@ public class ApiProfileController {
         this.service = service;
     }
 
+    @PreAuthorize("hasAuthority('user:write')")
     @PostMapping(value = "/my", consumes = "multipart/form-data")
     public ResponseEntity<?> editProfileWithPhoto(
             @ModelAttribute ProfileEditRequest requestWithPhoto,
@@ -28,6 +30,7 @@ public class ApiProfileController {
         return ResponseEntity.ok(service.editUser(requestWithPhoto, principal, photo));
     }
 
+    @PreAuthorize("hasAuthority('user:write')")
     @PostMapping(value = "/my", consumes = "application/json")
     public ResponseEntity<?> editProfile(
             @RequestBody ProfileEditRequest request,

@@ -14,6 +14,13 @@ spring:
     multipart:
       max-request-size: 100MB
       max-file-size: 100MB
+  mail:
+    host: smtp.yandex.ru
+    port: 465
+    username: d3vpub
+    password: testPassword
+    properties:
+      "mail.smtp.ssl.enable": true
 
 blog:
   title: DevPub
