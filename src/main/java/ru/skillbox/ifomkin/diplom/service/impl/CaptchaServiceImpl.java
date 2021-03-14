@@ -39,7 +39,7 @@ public class CaptchaServiceImpl implements CaptchaService {
         CaptchaCode captchaCode = new CaptchaCode();
         CaptchaResponse captchaResponse = new CaptchaResponse();
 
-        String codeOnImage = RandomStringGenerator.generateRandomString(captchaLength);
+        String codeOnImage = RandomStringGenerator.generateUpperCaseAndNumbersString(captchaLength);
         String secretCode = cage.getTokenGenerator().next();
         String base64Image = Base64.getEncoder().encodeToString(cage.draw(codeOnImage));
 

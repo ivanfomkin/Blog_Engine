@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.skillbox.ifomkin.diplom.dto.security.request.LoginsRequest;
+import ru.skillbox.ifomkin.diplom.dto.security.request.RegisterRequest;
 import ru.skillbox.ifomkin.diplom.dto.security.response.builder.LoginResponseFactory;
 import ru.skillbox.ifomkin.diplom.model.User;
 import ru.skillbox.ifomkin.diplom.service.AuthService;
@@ -72,5 +73,14 @@ public class ApiAuthController {
     @GetMapping("/captcha")
     public ResponseEntity<?> generateCaptcha() {
         return ResponseEntity.ok(captchaService.getCaptchaResponse());
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest request, Principal principal) {
+        if (principal == null) {
+            return ResponseEntity.ok(userService.registerUser(request));
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
