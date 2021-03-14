@@ -26,6 +26,8 @@ blog:
 storage:
   location: upload
   max-file-size: 10MB
+  image-width: 36
+  image-height: 36
 
 captcha:
   length: 5
