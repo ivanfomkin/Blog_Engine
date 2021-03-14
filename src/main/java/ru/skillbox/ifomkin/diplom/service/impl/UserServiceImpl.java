@@ -89,7 +89,6 @@ public class UserServiceImpl implements UserService {
                 response.setResult(false);
             }
         }
-        // @Todo: Check valid username
         if (!response.isResult()) {
             response.setErrors(editErrors);
             return response;
