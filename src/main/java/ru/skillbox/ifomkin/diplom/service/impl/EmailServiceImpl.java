@@ -1,6 +1,7 @@
 package ru.skillbox.ifomkin.diplom.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,9 @@ import java.net.UnknownHostException;
 public class EmailServiceImpl implements EmailService {
     private final JavaMailSender mailSender;
     private final String PASSWORD_RESTORE_SUBJECT = "DevPub: Восстановление пароля";
+
+    @Value("${blog.title}")
+    private String blogTitle;
 
     @Autowired
     public EmailServiceImpl(JavaMailSender mailSender) {
@@ -28,14 +32,15 @@ public class EmailServiceImpl implements EmailService {
         StringBuilder messageText = new StringBuilder();
         try {
             messageText.append("Добрый день! \n")
-                    .append("Вы запросили воссстановление паароля на сайте ")
-                    .append(InetAddress.getLocalHost().getHostAddress())
+                    .append("Вы запросили воссстановление паароля на портале ")
+                    .append(blogTitle)
                     .append("\n Для восстановления пароля передите по ссылке ниже: \n")
-                    .append("<a href=\"http://")
+                    .append("http://")
                     .append(InetAddress.getLocalHost().getHostAddress())
                     .append(":8080/login/change-password/")
                     .append(hash)
-                    .append("\"> \n С наилучшими пожеланиями, команда DevPub!");
+                    .append("\n С наилучшими пожеланиями, команда ")
+                    .append(blogTitle);
             message.setText(messageText.toString());
         } catch (UnknownHostException e) {
             e.printStackTrace();

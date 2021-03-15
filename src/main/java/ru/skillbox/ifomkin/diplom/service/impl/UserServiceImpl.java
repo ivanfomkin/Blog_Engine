@@ -9,11 +9,10 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skillbox.ifomkin.diplom.dto.pofile.request.ProfileEditRequest;
 import ru.skillbox.ifomkin.diplom.dto.pofile.response.ProfileEditErrors;
 import ru.skillbox.ifomkin.diplom.dto.pofile.response.ProfileEditResponse;
+import ru.skillbox.ifomkin.diplom.dto.security.request.ChangePasswordRequest;
 import ru.skillbox.ifomkin.diplom.dto.security.request.RegisterRequest;
 import ru.skillbox.ifomkin.diplom.dto.security.request.RestorePasswordRequest;
-import ru.skillbox.ifomkin.diplom.dto.security.response.LoginResponse;
-import ru.skillbox.ifomkin.diplom.dto.security.response.RegisterErrorResponse;
-import ru.skillbox.ifomkin.diplom.dto.security.response.RegisterResponse;
+import ru.skillbox.ifomkin.diplom.dto.security.response.*;
 import ru.skillbox.ifomkin.diplom.model.User;
 import ru.skillbox.ifomkin.diplom.repository.CaptchaRepository;
 import ru.skillbox.ifomkin.diplom.repository.UserRepository;
@@ -203,5 +202,36 @@ public class UserServiceImpl implements UserService {
     @Override
     public String generatePasswordRestoreHash() {
         return UUID.randomUUID().toString().replaceAll("-", "");
+    }
+
+    @Override
+    public PasswordRestoreResponse changePassword(ChangePasswordRequest request) {
+        PasswordRestoreResponse response = new PasswordRestoreResponse();
+        PasswordRestoreErrorsResponse errors = new PasswordRestoreErrorsResponse();
+        response.setResult(true);
+
+        User user = userRepository.findUserByCode(request.getCode());
+
+        if (user == null) {
+            response.setResult(false);
+            errors.setCode("Ссылка для восстановления пароля устарела. " +
+                    "<a href=\"/login/restore-password/\">Запросить ссылку снова</a>\"");
+        }
+        if (!captchaRepository.checkCaptcha(request.getCaptcha(), request.getCaptchaSecret())) {
+            response.setResult(false);
+            errors.setCaptcha("Код с картинки введён неверно");
+        }
+        if (!this.checkValidPassword(request.getPassword())) {
+            response.setResult(false);
+            errors.setPassword("Пароль короче 6-ти символов");
+        }
+        if (!response.isResult()) {
+            response.setErrors(errors);
+        } else {
+            user.setCode(null);
+            user.setPassword(new BCryptPasswordEncoder(12).encode(request.getPassword()));
+            userRepository.save(user);
+        }
+        return response;
     }
 }

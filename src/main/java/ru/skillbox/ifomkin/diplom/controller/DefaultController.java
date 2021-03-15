@@ -12,7 +12,21 @@ public class DefaultController {
         return "index";
     }
 
-    @RequestMapping(method = {RequestMethod.OPTIONS, RequestMethod.GET}, value = "/**/{path:[^\\.]}")
+    @RequestMapping(value = {
+            "/edit/*",
+            "/calendar/*",
+            "/my/*",
+            "/login",
+            "/login/**",
+            "/moderator/*",
+            "/moderation/*",
+            "/post/*",
+            "/posts/*",
+            "/profile",
+            "settings",
+            "/stat",
+            "/404"
+    })
     public String all() {
         return "forward:/";
     }
