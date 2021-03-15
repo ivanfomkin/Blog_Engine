@@ -12,6 +12,7 @@ import ru.skillbox.ifomkin.diplom.model.Post;
 import ru.skillbox.ifomkin.diplom.model.User;
 import ru.skillbox.ifomkin.diplom.model.enumerated.Status;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -41,6 +42,10 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query(value = "SELECT COUNT(*) FROM posts p WHERE is_active = 1 AND moderation_status = 'ACCEPTED' AND " +
             "time <= NOW()", nativeQuery = true)
     Integer countAllPublishedPosts();
+
+    @Query(value = "SELECT COUNT(*) FROM posts p WHERE is_active = 1 AND moderation_status = 'ACCEPTED' AND " +
+            "time <= NOW() AND user_id = ?1", nativeQuery = true)
+    Integer countAllPublishedPostsByUser(Integer userId);
 
     @Query(value = "SELECT * FROM posts p WHERE is_active = 1 AND moderation_status = 'ACCEPTED' AND " +
             "time <= NOW() AND (LOWER(p.text) like %:query% OR LOWER(p.title) like %:query%) " +
@@ -105,4 +110,13 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
             "AND EXTRACT(YEAR from p.time) = :year GROUP BY date", nativeQuery = true)
     List<PostCountByDateFromDb> getPostsCountByDate(@Param("year") Integer year);
 
+    @Query(value = "SELECT SUM(p.view_count) FROM posts p WHERE is_active = 1 " +
+            "AND moderation_status = 'ACCEPTED' AND time <= NOW() AND user_id = ?1",
+            nativeQuery = true)
+    Integer getViewCountByUser(Integer userId);
+
+    @Query(value = "SELECT p.time FROM posts p WHERE p.is_active = 1 " +
+            "AND p.moderation_status = 'ACCEPTED' AND p.time <= NOW() " +
+            "AND p.user_id = ?1 ORDER BY p.time LIMIT 1", nativeQuery = true)
+    LocalDateTime getFirsUserPostDate(Integer userId);
 }

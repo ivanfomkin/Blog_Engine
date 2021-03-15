@@ -13,7 +13,8 @@ import ru.skillbox.ifomkin.diplom.model.Post;
 import ru.skillbox.ifomkin.diplom.service.CommentService;
 
 import java.security.Principal;
-import java.time.ZoneOffset;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -52,7 +53,8 @@ public class CommentResponseFactory {
         user.setPhoto(comment.getUser().getPhoto());
         CommentInPostResponse commentInPostResponse = new CommentInPostResponse(
                 comment.getId(),
-                comment.getTime().toEpochSecond(ZoneOffset.UTC),
+                comment.getTime().toEpochSecond(
+                        OffsetDateTime.now(ZoneId.systemDefault()).getOffset()),
                 comment.getText(),
                 user
         );

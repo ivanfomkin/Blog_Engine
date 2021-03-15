@@ -10,6 +10,8 @@ import ru.skillbox.ifomkin.diplom.dto.user.UserInPostResponse;
 import ru.skillbox.ifomkin.diplom.model.Post;
 import ru.skillbox.ifomkin.diplom.model.TagInPost;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +20,8 @@ public class PostResponseFactory {
     public static PostResponse getPost(Post post) {
         return new FullPostResponse(
                 post.getId(),
-                post.getTime().toEpochSecond(ZoneOffset.UTC),
+                post.getTime().toEpochSecond(
+                        OffsetDateTime.now(ZoneId.systemDefault()).getOffset()),
                 post.getIsActive(),
                 new UserInPostResponse(
                         post.getUser().getId(),

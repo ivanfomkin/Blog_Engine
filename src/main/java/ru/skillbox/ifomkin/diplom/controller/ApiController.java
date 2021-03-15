@@ -9,10 +9,7 @@ import ru.skillbox.ifomkin.diplom.dto.post.factory.ModerateResponseFactory;
 import ru.skillbox.ifomkin.diplom.dto.post.request.ModeratePostRequest;
 import ru.skillbox.ifomkin.diplom.dto.settings.factory.SettingsResponseFactory;
 import ru.skillbox.ifomkin.diplom.dto.tag.factory.TagResponseFactory;
-import ru.skillbox.ifomkin.diplom.service.BlogInfoService;
-import ru.skillbox.ifomkin.diplom.service.GlobalSettingService;
-import ru.skillbox.ifomkin.diplom.service.PostService;
-import ru.skillbox.ifomkin.diplom.service.TagService;
+import ru.skillbox.ifomkin.diplom.service.*;
 
 import java.security.Principal;
 
@@ -23,13 +20,15 @@ public class ApiController {
     private final GlobalSettingService globalSettingService;
     private final TagService tagService;
     private final PostService postService;
+    private final UserService userService;
 
     @Autowired
-    public ApiController(BlogInfoService blogInfoService, GlobalSettingService globalSettingService, TagService tagService, PostService postService) {
+    public ApiController(BlogInfoService blogInfoService, GlobalSettingService globalSettingService, TagService tagService, PostService postService, UserService userService) {
         this.blogInfoService = blogInfoService;
         this.globalSettingService = globalSettingService;
         this.tagService = tagService;
         this.postService = postService;
+        this.userService = userService;
     }
 
     @GetMapping("/init")
@@ -71,5 +70,11 @@ public class ApiController {
         return ResponseEntity.ok(
                 ModerateResponseFactory.buildResponse(
                         postService.moderatePost(request, principal)));
+    }
+
+    @PreAuthorize("hasAuthority('user:write')")
+    @GetMapping("/statistics/my")
+    public ResponseEntity<?> myStatistic(Principal principal) {
+        return ResponseEntity.ok(userService.getMyStatistic(principal));
     }
 }

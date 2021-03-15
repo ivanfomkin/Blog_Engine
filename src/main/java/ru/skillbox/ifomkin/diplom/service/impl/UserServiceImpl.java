@@ -6,6 +6,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.unit.DataSize;
 import org.springframework.web.multipart.MultipartFile;
+import ru.skillbox.ifomkin.diplom.dto.Dto;
 import ru.skillbox.ifomkin.diplom.dto.pofile.request.ProfileEditRequest;
 import ru.skillbox.ifomkin.diplom.dto.pofile.response.ProfileEditErrors;
 import ru.skillbox.ifomkin.diplom.dto.pofile.response.ProfileEditResponse;
@@ -13,8 +14,11 @@ import ru.skillbox.ifomkin.diplom.dto.security.request.ChangePasswordRequest;
 import ru.skillbox.ifomkin.diplom.dto.security.request.RegisterRequest;
 import ru.skillbox.ifomkin.diplom.dto.security.request.RestorePasswordRequest;
 import ru.skillbox.ifomkin.diplom.dto.security.response.*;
+import ru.skillbox.ifomkin.diplom.dto.statistic.StatisticResponse;
 import ru.skillbox.ifomkin.diplom.model.User;
 import ru.skillbox.ifomkin.diplom.repository.CaptchaRepository;
+import ru.skillbox.ifomkin.diplom.repository.PostRepository;
+import ru.skillbox.ifomkin.diplom.repository.PostVotesRepository;
 import ru.skillbox.ifomkin.diplom.repository.UserRepository;
 import ru.skillbox.ifomkin.diplom.service.EmailService;
 import ru.skillbox.ifomkin.diplom.service.StorageService;
@@ -23,6 +27,7 @@ import ru.skillbox.ifomkin.diplom.service.UserService;
 import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
@@ -32,16 +37,20 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final StorageService storageService;
     private final EmailService emailService;
+    private final PostRepository postRepository;
+    private final PostVotesRepository votesRepository;
 
     @Value("${storage.max-file-size}")
     private DataSize maxFileSize;
     private final CaptchaRepository captchaRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, StorageService storageService, EmailService emailService, CaptchaRepository captchaRepository) {
+    public UserServiceImpl(UserRepository userRepository, StorageService storageService, EmailService emailService, PostRepository postRepository, PostVotesRepository votesRepository, CaptchaRepository captchaRepository) {
         this.userRepository = userRepository;
         this.storageService = storageService;
         this.emailService = emailService;
+        this.postRepository = postRepository;
+        this.votesRepository = votesRepository;
         this.captchaRepository = captchaRepository;
     }
 
@@ -232,6 +241,22 @@ public class UserServiceImpl implements UserService {
             user.setPassword(new BCryptPasswordEncoder(12).encode(request.getPassword()));
             userRepository.save(user);
         }
+        return response;
+    }
+
+    @Override
+    public Dto getMyStatistic(Principal principal) {
+        StatisticResponse response = new StatisticResponse();
+        Integer userId = userRepository.findByEmail(principal.getName()).getId();
+
+        response.setPostCount(postRepository.countAllPublishedPostsByUser(userId));
+        response.setLikesCount(votesRepository.getUserLikeCount(userId));
+        response.setDislikesCount(votesRepository.getUserDislikeCount(userId));
+        response.setViewsCount(postRepository.getViewCountByUser(userId));
+        response.setFirstPublication(
+                postRepository.getFirsUserPostDate(userId).
+                        toEpochSecond(OffsetDateTime.now(ZoneId.systemDefault()).getOffset()));
+
         return response;
     }
 }

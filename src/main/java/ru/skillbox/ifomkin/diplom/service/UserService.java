@@ -1,6 +1,7 @@
 package ru.skillbox.ifomkin.diplom.service;
 
 import org.springframework.web.multipart.MultipartFile;
+import ru.skillbox.ifomkin.diplom.dto.Dto;
 import ru.skillbox.ifomkin.diplom.dto.pofile.request.ProfileEditRequest;
 import ru.skillbox.ifomkin.diplom.dto.pofile.response.ProfileEditResponse;
 import ru.skillbox.ifomkin.diplom.dto.security.request.ChangePasswordRequest;
@@ -35,4 +36,5 @@ public interface UserService {
 
     PasswordRestoreResponse changePassword(ChangePasswordRequest request);
 
+    Dto getMyStatistic(Principal principal);
 }

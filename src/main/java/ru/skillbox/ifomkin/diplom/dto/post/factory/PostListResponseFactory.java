@@ -5,10 +5,9 @@ import ru.skillbox.ifomkin.diplom.dto.post.response.PostListResponse;
 import ru.skillbox.ifomkin.diplom.dto.post.response.PostResponse;
 import ru.skillbox.ifomkin.diplom.dto.user.UserInPostResponse;
 import ru.skillbox.ifomkin.diplom.model.Post;
-import ru.skillbox.ifomkin.diplom.service.PostService;
 
-import java.time.ZoneOffset;
-import java.util.Comparator;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,7 +19,8 @@ public class PostListResponseFactory {
     private static List<Dto> getPostListResponse(List<Post> posts) {
         return posts.stream().map(post -> new PostResponse(
                 post.getId(),
-                post.getTime().toEpochSecond(ZoneOffset.UTC),
+                post.getTime().toEpochSecond(
+                        OffsetDateTime.now(ZoneId.systemDefault()).getOffset()),
                 new UserInPostResponse(
                         post.getUser().getId(),
                         post.getUser().getName()
