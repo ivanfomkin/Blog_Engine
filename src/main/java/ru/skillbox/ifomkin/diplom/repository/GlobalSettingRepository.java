@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface GlobalSettingRepository extends JpaRepository<GlobalSetting, Integer> {
     List<GlobalSetting> findAll();
+
+    GlobalSetting findGlobalSettingByCode(String code);
 }

@@ -118,5 +118,15 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query(value = "SELECT p.time FROM posts p WHERE p.is_active = 1 " +
             "AND p.moderation_status = 'ACCEPTED' AND p.time <= NOW() " +
             "AND p.user_id = ?1 ORDER BY p.time LIMIT 1", nativeQuery = true)
-    LocalDateTime getFirsUserPostDate(Integer userId);
+    LocalDateTime getFirstUserPostDate(Integer userId);
+
+    @Query(value = "SELECT SUM(p.view_count) FROM posts p WHERE is_active = 1 " +
+            "AND moderation_status = 'ACCEPTED' AND time <= NOW()",
+            nativeQuery = true)
+    Integer getViewCountForAllPublishedPosts();
+
+    @Query(value = "SELECT p.time FROM posts p WHERE p.is_active = 1 " +
+            "AND p.moderation_status = 'ACCEPTED' AND p.time <= NOW() " +
+            "ORDER BY p.time LIMIT 1", nativeQuery = true)
+    LocalDateTime getFirstPostDate();
 }

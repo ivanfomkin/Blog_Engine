@@ -252,10 +252,13 @@ public class UserServiceImpl implements UserService {
         response.setPostCount(postRepository.countAllPublishedPostsByUser(userId));
         response.setLikesCount(votesRepository.getUserLikeCount(userId));
         response.setDislikesCount(votesRepository.getUserDislikeCount(userId));
-        response.setViewsCount(postRepository.getViewCountByUser(userId));
-        response.setFirstPublication(
-                postRepository.getFirsUserPostDate(userId).
-                        toEpochSecond(OffsetDateTime.now(ZoneId.systemDefault()).getOffset()));
+        Integer viewCountByUser = postRepository.getViewCountByUser(userId);
+        response.setViewsCount(viewCountByUser == null ? 0 : viewCountByUser);
+        LocalDateTime firstPostDate = postRepository.getFirstUserPostDate(userId);
+        response.setFirstPublication(firstPostDate == null ?
+                null :
+                firstPostDate.toEpochSecond(OffsetDateTime.now(ZoneId.systemDefault()).getOffset())
+        );
 
         return response;
     }

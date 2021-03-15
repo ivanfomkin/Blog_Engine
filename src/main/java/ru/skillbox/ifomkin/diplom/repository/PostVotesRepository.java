@@ -18,4 +18,16 @@ public interface PostVotesRepository extends JpaRepository<Vote, Long> {
             "AND p.moderation_status = 'ACCEPTED' AND p.is_active = 1 " +
             "AND p.time <= NOW()", nativeQuery = true)
     Integer getUserDislikeCount(Integer userId);
+
+    @Query(value = "SELECT COUNT(*) FROM post_votes pv JOIN posts p " +
+            "ON pv.post_id = p.id WHERE pv.value = 1 " +
+            "AND p.moderation_status = 'ACCEPTED' AND p.is_active = 1 " +
+            "AND p.time <= NOW()", nativeQuery = true)
+    Integer getAllLikeCount();
+
+    @Query(value = "SELECT COUNT(*) FROM post_votes pv JOIN posts p " +
+            "ON pv.post_id = p.id WHERE pv.value = -1 " +
+            "AND p.moderation_status = 'ACCEPTED' AND p.is_active = 1 " +
+            "AND p.time <= NOW()", nativeQuery = true)
+    Integer allDislikeCount();
 }
