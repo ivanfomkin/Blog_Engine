@@ -39,10 +39,12 @@ public class UserServiceImpl implements UserService {
     private final EmailService emailService;
     private final PostRepository postRepository;
     private final PostVotesRepository votesRepository;
+    private final CaptchaRepository captchaRepository;
 
     @Value("${storage.max-file-size}")
     private DataSize maxFileSize;
-    private final CaptchaRepository captchaRepository;
+    @Value("${captcha.drop-time}")
+    private Integer captchaInterval;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, StorageService storageService, EmailService emailService, PostRepository postRepository, PostVotesRepository votesRepository, CaptchaRepository captchaRepository) {
@@ -148,7 +150,7 @@ public class UserServiceImpl implements UserService {
             errors.setEmail("Пользователь с таким email уже зарегистрирован");
         }
         if (!captchaRepository.checkCaptcha(request.getCaptcha().toUpperCase()
-                , request.getCaptchaSecret())) {
+                , request.getCaptchaSecret(), captchaInterval)) {
             response.setResult(false);
             errors.setCaptcha("Код с картинки введён неверно");
         }
@@ -226,7 +228,7 @@ public class UserServiceImpl implements UserService {
             errors.setCode("Ссылка для восстановления пароля устарела. " +
                     "<a href=\"/login/restore-password/\">Запросить ссылку снова</a>\"");
         }
-        if (!captchaRepository.checkCaptcha(request.getCaptcha(), request.getCaptchaSecret())) {
+        if (!captchaRepository.checkCaptcha(request.getCaptcha(), request.getCaptchaSecret(), captchaInterval)) {
             response.setResult(false);
             errors.setCaptcha("Код с картинки введён неверно");
         }
