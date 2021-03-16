@@ -5,6 +5,7 @@ import ru.skillbox.ifomkin.diplom.dto.post.response.PostListResponse;
 import ru.skillbox.ifomkin.diplom.dto.post.response.PostResponse;
 import ru.skillbox.ifomkin.diplom.dto.user.UserInPostResponse;
 import ru.skillbox.ifomkin.diplom.model.Post;
+import ru.skillbox.ifomkin.diplom.service.PostService;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -12,11 +13,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class PostListResponseFactory {
-    public static PostListResponse getPosts(int postCount, List<Post> posts) {
-        return new PostListResponse(postCount, getPostListResponse(posts));
+    public static PostListResponse getPosts(int postCount, List<Post> posts, PostService postService) {
+        return new PostListResponse(postCount, getPostListResponse(posts, postService));
     }
 
-    private static List<Dto> getPostListResponse(List<Post> posts) {
+    private static List<Dto> getPostListResponse(List<Post> posts, PostService postService) {
         return posts.stream().map(post -> new PostResponse(
                 post.getId(),
                 post.getTime().toEpochSecond(
@@ -27,8 +28,8 @@ public class PostListResponseFactory {
                 ),
                 post.getTitle(),
                 post.getText().length() > 250 ? post.getText().substring(0, 250) : post.getText(),
-                15,
-                10,
+                postService.getLikeCountByPost(post),
+                postService.getDislikeCountByPost(post),
                 post.getComments().size(),
                 post.getViewCount()
         )).collect(Collectors.toList());

@@ -12,6 +12,7 @@ import ru.skillbox.ifomkin.diplom.model.Post;
 import ru.skillbox.ifomkin.diplom.model.User;
 import ru.skillbox.ifomkin.diplom.model.enumerated.Status;
 import ru.skillbox.ifomkin.diplom.repository.PostRepository;
+import ru.skillbox.ifomkin.diplom.repository.PostVotesRepository;
 import ru.skillbox.ifomkin.diplom.repository.UserRepository;
 import ru.skillbox.ifomkin.diplom.service.PostService;
 import ru.skillbox.ifomkin.diplom.service.TagInPostService;
@@ -29,13 +30,15 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final TagInPostService tagInPostService;
+    private final PostVotesRepository votesRepository;
     private final TagService tagService;
 
     @Autowired
-    public PostServiceImpl(PostRepository postRepository, UserRepository userRepository, TagInPostService tagInPostService, TagService tagService) {
+    public PostServiceImpl(PostRepository postRepository, UserRepository userRepository, TagInPostService tagInPostService, PostVotesRepository votesRepository, TagService tagService) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.tagInPostService = tagInPostService;
+        this.votesRepository = votesRepository;
         this.tagService = tagService;
     }
 
@@ -306,4 +309,16 @@ public class PostServiceImpl implements PostService {
             return true;
         }
     }
+
+    @Override
+    public int getLikeCountByPost(Post post) {
+        Integer count = votesRepository.likeCountByPost(post.getId());
+        return count == null ? 0 : count;
+    }
+
+    @Override
+    public int getDislikeCountByPost(Post post) {
+        Integer count = votesRepository.dislikeCountByPost(post.getId());
+        return count == null ? 0 : count;
+    };
 }

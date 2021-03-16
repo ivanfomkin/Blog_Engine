@@ -53,4 +53,8 @@ public interface PostService {
     List<PostCountByDateFromDb> getPostCountByDateFromDb(String year);
 
     boolean moderatePost(ModeratePostRequest request, Principal principal);
+
+    int getLikeCountByPost(Post post);
+
+    int getDislikeCountByPost(Post post);
 }

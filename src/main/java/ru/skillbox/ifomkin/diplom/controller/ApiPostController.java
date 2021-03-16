@@ -34,7 +34,7 @@ public class ApiPostController {
             @RequestParam(required = false, defaultValue = "recent") String mode) {
         return ResponseEntity.ok(PostListResponseFactory
                 .getPosts(postService.getCountOfPublishedPosts(),
-                        postService.findPublishedPosts(offset, limit, mode)));
+                        postService.findPublishedPosts(offset, limit, mode), postService));
     }
 
     @GetMapping("/search")
@@ -46,7 +46,7 @@ public class ApiPostController {
         List<Post> posts = postService.searchPosts(offset, limit, query);
         return ResponseEntity.ok(PostListResponseFactory
                 .getPosts(postService.searchedPostsCount(query),
-                        posts));
+                        posts, postService));
     }
 
     @GetMapping("/{id}")
@@ -57,7 +57,7 @@ public class ApiPostController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(PostResponseFactory
-                .getPost(post));
+                .getPost(post, postService));
     }
 
     @GetMapping("/byDate")
@@ -68,7 +68,7 @@ public class ApiPostController {
     ) {
         return ResponseEntity.ok(PostListResponseFactory
                 .getPosts(postService.getCountOfPublishedPostsByDate(date),
-                        postService.findPublishedPostsByDate(offset, limit, date)));
+                        postService.findPublishedPostsByDate(offset, limit, date), postService));
     }
 
     @GetMapping("/byTag")
@@ -79,7 +79,7 @@ public class ApiPostController {
     ) {
         return ResponseEntity.ok(PostListResponseFactory
                 .getPosts(postService.getCountOfPublishedPostsByTag(tag),
-                        postService.findPublishedPostsByTag(offset, limit, tag)));
+                        postService.findPublishedPostsByTag(offset, limit, tag), postService));
     }
 
     @PreAuthorize("hasAuthority('user:moderate')")
@@ -92,7 +92,7 @@ public class ApiPostController {
     ) {
         return ResponseEntity.ok(PostListResponseFactory
                 .getPosts(postService.getCountOfPostsForModeration(status, principal),
-                        postService.findByStatusForModerator(status, principal, offset, limit)));
+                        postService.findByStatusForModerator(status, principal, offset, limit), postService));
     }
 
     @PreAuthorize("hasAuthority('user:write')")
@@ -104,7 +104,7 @@ public class ApiPostController {
             Principal principal) {
         return ResponseEntity.ok(PostListResponseFactory
                 .getPosts(postService.getCountOfPostsByStatusForUser(status, principal),
-                        postService.findByStatusForUser(status, principal, offset, limit)));
+                        postService.findByStatusForUser(status, principal, offset, limit), postService));
     }
 
     @PreAuthorize("hasAuthority('user:write')")

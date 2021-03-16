@@ -9,15 +9,15 @@ import ru.skillbox.ifomkin.diplom.dto.post.response.PostResponse;
 import ru.skillbox.ifomkin.diplom.dto.user.UserInPostResponse;
 import ru.skillbox.ifomkin.diplom.model.Post;
 import ru.skillbox.ifomkin.diplom.model.TagInPost;
+import ru.skillbox.ifomkin.diplom.service.PostService;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PostResponseFactory {
-    public static PostResponse getPost(Post post) {
+    public static PostResponse getPost(Post post, PostService postService) {
         return new FullPostResponse(
                 post.getId(),
                 post.getTime().toEpochSecond(
@@ -30,8 +30,8 @@ public class PostResponseFactory {
                 post.getTitle(),
                 post.getText().length() > 250 ? post.getText().substring(0, 250) : post.getText(),
                 post.getText(),
-                15,
-                10,
+                postService.getLikeCountByPost(post),
+                postService.getDislikeCountByPost(post),
                 post.getComments().size(),
                 post.getViewCount(),
                 CommentResponseFactory.buildCommentsResponse(post),
