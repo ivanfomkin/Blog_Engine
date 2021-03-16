@@ -4,13 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import ru.skillbox.ifomkin.diplom.dto.post.factory.ModerateResponseFactory;
 import ru.skillbox.ifomkin.diplom.dto.post.factory.PostListResponseFactory;
 import ru.skillbox.ifomkin.diplom.dto.post.factory.PostResponseFactory;
-import ru.skillbox.ifomkin.diplom.dto.post.request.ModeratePostRequest;
 import ru.skillbox.ifomkin.diplom.dto.post.request.PostRequest;
+import ru.skillbox.ifomkin.diplom.dto.vote.VoteRequest;
 import ru.skillbox.ifomkin.diplom.model.Post;
 import ru.skillbox.ifomkin.diplom.service.PostService;
+import ru.skillbox.ifomkin.diplom.service.PostVotesService;
 
 import java.security.Principal;
 import java.util.List;
@@ -19,10 +19,12 @@ import java.util.List;
 @RequestMapping("api/post")
 public class ApiPostController {
     private final PostService postService;
+    private final PostVotesService votesService;
 
     @Autowired
-    public ApiPostController(PostService postService) {
+    public ApiPostController(PostService postService, PostVotesService votesService) {
         this.postService = postService;
+        this.votesService = votesService;
     }
 
     @GetMapping
@@ -122,5 +124,19 @@ public class ApiPostController {
             @PathVariable Integer id) {
         return ResponseEntity.ok(PostResponseFactory.getPostAddResponse(
                 postService.updatePost(postRequest, id, principal), postRequest));
+    }
+
+    @PostMapping("/like")
+    public ResponseEntity<?> like(
+            @RequestBody VoteRequest voteRequest,
+            Principal principal) {
+        return ResponseEntity.ok(votesService.like(voteRequest, principal));
+    }
+
+    @PostMapping("/dislike")
+    public ResponseEntity<?> dislike(
+            @RequestBody VoteRequest voteRequest,
+            Principal principal) {
+        return ResponseEntity.ok(votesService.dislike(voteRequest, principal));
     }
 }

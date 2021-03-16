@@ -25,7 +25,6 @@ public class Vote implements Serializable {
     private Post post;
 
     @NotNull
-    @Type(type = "timestamp")
     private LocalDateTime time;
 
     @NotNull
