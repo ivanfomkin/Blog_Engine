@@ -1,6 +1,6 @@
 package ru.skillbox.ifomkin.diplom.service;
 
-import ru.skillbox.ifomkin.diplom.dto.statistic.StatisticResponse;
+import ru.skillbox.ifomkin.diplom.dto.statistic.response.StatisticResponse;
 
 import java.security.Principal;
 import java.util.Map;

@@ -3,7 +3,8 @@ package ru.skillbox.ifomkin.diplom.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import ru.skillbox.ifomkin.diplom.dto.statistic.StatisticResponse;
+import ru.skillbox.ifomkin.diplom.dto.statistic.factory.StatisticResponseFactory;
+import ru.skillbox.ifomkin.diplom.dto.statistic.response.StatisticResponse;
 import ru.skillbox.ifomkin.diplom.model.GlobalSetting;
 import ru.skillbox.ifomkin.diplom.model.User;
 import ru.skillbox.ifomkin.diplom.repository.GlobalSettingRepository;
@@ -13,8 +14,6 @@ import ru.skillbox.ifomkin.diplom.repository.UserRepository;
 import ru.skillbox.ifomkin.diplom.service.BlogInfoService;
 
 import java.security.Principal;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,20 +62,10 @@ public class BlogInfoServiceImpl implements BlogInfoService {
     public StatisticResponse getAllStatistic(Principal principal) {
         GlobalSetting statisticsIsPublic =
                 settingRepository.findGlobalSettingByCode("STATISTICS_IS_PUBLIC");
-
         User user = principal == null ? null : userRepository.findByEmail(principal.getName());
 
         if (statisticsIsPublic.getValue() || (user != null && user.getIsModerator())) {
-            StatisticResponse response = new StatisticResponse();
-
-            response.setPostCount(postRepository.countAllPublishedPosts());
-            response.setLikesCount(votesRepository.getAllLikeCount());
-            response.setDislikesCount(votesRepository.allDislikeCount());
-            response.setViewsCount(postRepository.getViewCountForAllPublishedPosts());
-            response.setFirstPublication(
-                    postRepository.getFirstPostDate()
-                            .toEpochSecond(OffsetDateTime.now(ZoneId.systemDefault()).getOffset()));
-            return response;
+            return StatisticResponseFactory.buildResponse(settingRepository.getGlobalStats());
         } else {
             return null;
         }

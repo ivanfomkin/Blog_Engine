@@ -1,4 +1,4 @@
-package ru.skillbox.ifomkin.diplom.dto.statistic;
+package ru.skillbox.ifomkin.diplom.dto.statistic.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -11,7 +11,7 @@ import ru.skillbox.ifomkin.diplom.dto.Dto;
 @NoArgsConstructor
 public class StatisticResponse implements Dto {
     @JsonProperty("postsCount")
-    private Integer postCount;
+    private Integer postsCount;
     @JsonProperty("likesCount")
     private Integer likesCount;
     @JsonProperty("dislikesCount")

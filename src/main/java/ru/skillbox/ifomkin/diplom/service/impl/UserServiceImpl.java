@@ -14,7 +14,7 @@ import ru.skillbox.ifomkin.diplom.dto.security.request.ChangePasswordRequest;
 import ru.skillbox.ifomkin.diplom.dto.security.request.RegisterRequest;
 import ru.skillbox.ifomkin.diplom.dto.security.request.RestorePasswordRequest;
 import ru.skillbox.ifomkin.diplom.dto.security.response.*;
-import ru.skillbox.ifomkin.diplom.dto.statistic.StatisticResponse;
+import ru.skillbox.ifomkin.diplom.dto.statistic.factory.StatisticResponseFactory;
 import ru.skillbox.ifomkin.diplom.model.User;
 import ru.skillbox.ifomkin.diplom.repository.CaptchaRepository;
 import ru.skillbox.ifomkin.diplom.repository.PostRepository;
@@ -27,7 +27,6 @@ import ru.skillbox.ifomkin.diplom.service.UserService;
 import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
@@ -248,20 +247,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Dto getMyStatistic(Principal principal) {
-        StatisticResponse response = new StatisticResponse();
         Integer userId = userRepository.findByEmail(principal.getName()).getId();
-
-        response.setPostCount(postRepository.countAllPublishedPostsByUser(userId));
-        response.setLikesCount(votesRepository.getUserLikeCount(userId));
-        response.setDislikesCount(votesRepository.getUserDislikeCount(userId));
-        Integer viewCountByUser = postRepository.getViewCountByUser(userId);
-        response.setViewsCount(viewCountByUser == null ? 0 : viewCountByUser);
-        LocalDateTime firstPostDate = postRepository.getFirstUserPostDate(userId);
-        response.setFirstPublication(firstPostDate == null ?
-                null :
-                firstPostDate.toEpochSecond(OffsetDateTime.now(ZoneId.systemDefault()).getOffset())
-        );
-
-        return response;
+        return StatisticResponseFactory.buildResponse(userRepository.getMyStatistic(userId));
     }
 }
