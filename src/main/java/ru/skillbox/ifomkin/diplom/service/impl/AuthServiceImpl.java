@@ -9,9 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 import ru.skillbox.ifomkin.diplom.model.User;
-import ru.skillbox.ifomkin.diplom.repository.UserRepository;
 import ru.skillbox.ifomkin.diplom.service.AuthService;
-import ru.skillbox.ifomkin.diplom.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,12 +18,10 @@ import java.security.Principal;
 @Service
 public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
-    private final UserService userService;
 
     @Autowired
-    public AuthServiceImpl(AuthenticationManager authenticationManager, UserRepository userRepository, UserService userService) {
+    public AuthServiceImpl(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
-        this.userService = userService;
     }
 
     @Override

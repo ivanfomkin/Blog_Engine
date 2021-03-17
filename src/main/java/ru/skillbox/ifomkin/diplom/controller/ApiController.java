@@ -8,6 +8,7 @@ import ru.skillbox.ifomkin.diplom.dto.calendar.factory.CalendarResponseFactory;
 import ru.skillbox.ifomkin.diplom.dto.post.factory.ModerateResponseFactory;
 import ru.skillbox.ifomkin.diplom.dto.post.request.ModeratePostRequest;
 import ru.skillbox.ifomkin.diplom.dto.settings.factory.SettingsResponseFactory;
+import ru.skillbox.ifomkin.diplom.dto.settings.request.ChangeGlobalSettingsRequest;
 import ru.skillbox.ifomkin.diplom.dto.statistic.response.StatisticResponse;
 import ru.skillbox.ifomkin.diplom.dto.tag.factory.TagResponseFactory;
 import ru.skillbox.ifomkin.diplom.service.*;
@@ -41,6 +42,12 @@ public class ApiController {
     public ResponseEntity<?> getBlogSettings() {
         return ResponseEntity.ok(
                 SettingsResponseFactory.getSettingsResponse(globalSettingService.findAll()));
+    }
+
+    @PutMapping("/settings")
+    public ResponseEntity<?> changeBlogSettings(@RequestBody ChangeGlobalSettingsRequest request,
+                                                Principal principal) {
+        return globalSettingService.changeGlobalSetting(request, principal);
     }
 
     @GetMapping("/tag")

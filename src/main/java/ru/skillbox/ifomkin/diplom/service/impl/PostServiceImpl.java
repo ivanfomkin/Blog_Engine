@@ -14,6 +14,7 @@ import ru.skillbox.ifomkin.diplom.model.enumerated.Status;
 import ru.skillbox.ifomkin.diplom.repository.PostRepository;
 import ru.skillbox.ifomkin.diplom.repository.PostVotesRepository;
 import ru.skillbox.ifomkin.diplom.repository.UserRepository;
+import ru.skillbox.ifomkin.diplom.service.GlobalSettingService;
 import ru.skillbox.ifomkin.diplom.service.PostService;
 import ru.skillbox.ifomkin.diplom.service.TagInPostService;
 import ru.skillbox.ifomkin.diplom.service.TagService;
@@ -32,14 +33,16 @@ public class PostServiceImpl implements PostService {
     private final TagInPostService tagInPostService;
     private final PostVotesRepository votesRepository;
     private final TagService tagService;
+    private  final GlobalSettingService settingService;
 
     @Autowired
-    public PostServiceImpl(PostRepository postRepository, UserRepository userRepository, TagInPostService tagInPostService, PostVotesRepository votesRepository, TagService tagService) {
+    public PostServiceImpl(PostRepository postRepository, UserRepository userRepository, TagInPostService tagInPostService, PostVotesRepository votesRepository, TagService tagService, GlobalSettingService settingService) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.tagInPostService = tagInPostService;
         this.votesRepository = votesRepository;
         this.tagService = tagService;
+        this.settingService = settingService;
     }
 
     @Override
@@ -219,15 +222,19 @@ public class PostServiceImpl implements PostService {
         if (checkValidPostRequest(postRequest)) {
             User user = userRepository.findByEmail(principal.getName());
             Post post = new Post();
-            if (postRequest.getTimestamp() < System.currentTimeMillis()) {
-                setPostTime(post, System.currentTimeMillis());
+            if (postRequest.getTimestamp() < System.currentTimeMillis()/1000) {
+                setPostTime(post, System.currentTimeMillis()/1000);
             } else {
                 setPostTime(post, postRequest.getTimestamp());
             }
             post.setIsActive(postRequest.getActive() == 1 ? true : false);
             post.setTitle(postRequest.getTitle());
             post.setText(postRequest.getText());
-            post.setModerationStatus(Status.NEW);
+            if (user.getIsModerator() || !settingService.getPremoderation()) {
+                post.setModerationStatus(Status.ACCEPTED);
+            } else {
+                post.setModerationStatus(Status.NEW);
+            }
             post.setUser(user);
             post.setViewCount(0);
             postRepository.save(post);
@@ -246,8 +253,8 @@ public class PostServiceImpl implements PostService {
             Post postRepositoryById = postRepository.findPostById(postId);
             if (postRepository == null)
                 return false;
-            if (postRequest.getTimestamp() < System.currentTimeMillis()) {
-                setPostTime(postRepositoryById, System.currentTimeMillis());
+            if (postRequest.getTimestamp() < System.currentTimeMillis()/1000) {
+                setPostTime(postRepositoryById, System.currentTimeMillis()/1000);
             } else {
                 setPostTime(postRepositoryById, postRequest.getTimestamp());
             }
@@ -270,7 +277,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void setPostTime(Post post, long time) {
-        post.setTime(Instant.ofEpochMilli(
+        post.setTime(Instant.ofEpochSecond(
                 time)
                 .atZone(ZoneId.systemDefault())
                 .toLocalDateTime());
@@ -320,5 +327,5 @@ public class PostServiceImpl implements PostService {
     public int getDislikeCountByPost(Post post) {
         Integer count = votesRepository.dislikeCountByPost(post.getId());
         return count == null ? 0 : count;
-    };
+    }
 }

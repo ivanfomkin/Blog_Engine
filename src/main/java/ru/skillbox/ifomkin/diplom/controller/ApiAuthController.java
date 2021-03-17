@@ -14,10 +14,7 @@ import ru.skillbox.ifomkin.diplom.dto.security.request.RegisterRequest;
 import ru.skillbox.ifomkin.diplom.dto.security.request.RestorePasswordRequest;
 import ru.skillbox.ifomkin.diplom.dto.security.response.builder.LoginResponseFactory;
 import ru.skillbox.ifomkin.diplom.model.User;
-import ru.skillbox.ifomkin.diplom.service.AuthService;
-import ru.skillbox.ifomkin.diplom.service.CaptchaService;
-import ru.skillbox.ifomkin.diplom.service.PostService;
-import ru.skillbox.ifomkin.diplom.service.UserService;
+import ru.skillbox.ifomkin.diplom.service.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,13 +28,15 @@ public class ApiAuthController {
     private final AuthService authService;
     private final PostService postService;
     private final CaptchaService captchaService;
+    private final GlobalSettingService globalSettingService;
 
     @Autowired
-    public ApiAuthController(UserService userService, AuthService authService, PostService postService, CaptchaService captchaService) {
+    public ApiAuthController(UserService userService, AuthService authService, PostService postService, CaptchaService captchaService, GlobalSettingService globalSettingService) {
         this.userService = userService;
         this.authService = authService;
         this.postService = postService;
         this.captchaService = captchaService;
+        this.globalSettingService = globalSettingService;
     }
 
     @PostMapping("/login")
@@ -79,6 +78,9 @@ public class ApiAuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegisterRequest request, Principal principal) {
+        if (!globalSettingService.getMultiUserModeValue()) {
+            return ResponseEntity.notFound().build();
+        }
         if (principal == null) {
             return ResponseEntity.ok(userService.registerUser(request));
         } else {
