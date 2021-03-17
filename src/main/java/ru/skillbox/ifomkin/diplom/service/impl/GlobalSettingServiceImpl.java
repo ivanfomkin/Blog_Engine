@@ -52,12 +52,12 @@ public class GlobalSettingServiceImpl implements GlobalSettingService {
     @Override
     public Boolean getMultiUserModeValue() {
         String valueByCode = settingRepository.getValueByCode(MULTIUSER_MODE_CODE);
-        return valueByCode.equalsIgnoreCase("YES") ? true : false;
+        return valueByCode.equalsIgnoreCase("YES");
     }
 
     @Override
     public Boolean getPremoderation() {
         String valueByCode = settingRepository.getValueByCode(POST_PREMODERATION_CODE);
-        return valueByCode.equalsIgnoreCase("YES") ? true : false;
+        return valueByCode.equalsIgnoreCase("YES");
     }
 }
