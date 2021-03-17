@@ -1,0 +1,1 @@
+web: java -jar target/Blog_Engine-1.0.jar
