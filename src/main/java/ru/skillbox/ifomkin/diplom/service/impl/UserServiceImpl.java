@@ -44,6 +44,12 @@ public class UserServiceImpl implements UserService {
     private DataSize maxFileSize;
     @Value("${captcha.drop-time}")
     private Integer captchaInterval;
+    @Value("${content.password.minimum-password-length}")
+    private Integer minimumPasswordLength;
+    @Value("${content.user.minimum-name-length}")
+    private Integer minimumNameLength;
+    @Value("${content.user.maximum-name-length}")
+    private Integer maximumNameLength;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, StorageService storageService, EmailService emailService, PostRepository postRepository, PostVotesRepository votesRepository, CaptchaRepository captchaRepository) {
@@ -180,14 +186,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public Boolean checkValidUserName(String username) {
         return username != null
-                && username.length() >= 4
-                && username.length() <= 30
+                && username.length() >= minimumNameLength
+                && username.length() <= maximumNameLength
                 && username.matches("[^\\d][а-яА-Я0-9a-zA-Z]*");
     }
 
     @Override
     public Boolean checkValidPassword(String password) {
-        return password.length() >= 6;
+        return password.length() >= minimumPasswordLength;
     }
 
     @Override

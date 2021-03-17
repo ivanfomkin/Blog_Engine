@@ -1,5 +1,6 @@
 package ru.skillbox.ifomkin.diplom.dto.post.factory;
 
+import org.springframework.beans.factory.annotation.Value;
 import ru.skillbox.ifomkin.diplom.dto.comment.factory.CommentResponseFactory;
 import ru.skillbox.ifomkin.diplom.dto.post.request.PostRequest;
 import ru.skillbox.ifomkin.diplom.dto.post.response.FullPostResponse;
@@ -16,6 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PostResponseFactory {
+    @Value("${content.post.minimum-text-length}")
+    private static Integer minimumPostTextLength;
+    @Value("${content.post.minimum-title-length}")
+    private static Integer minimumPostTitleLength;
+
     public static PostResponse getPost(Post post) {
         return new FullPostResponse(
                 post.getId(),
@@ -41,10 +47,10 @@ public class PostResponseFactory {
         PostAddErrorResponse postAddErrorResponse = null;
         if (!result) {
             postAddErrorResponse = new PostAddErrorResponse();
-            if (postRequest.getText().length() < 50) {
+            if (postRequest.getText().length() < minimumPostTextLength) {
                 postAddErrorResponse.setText("Текст публикации слишком короткий");
             }
-            if (postRequest.getTitle().length() < 3) {
+            if (postRequest.getTitle().length() < minimumPostTitleLength) {
                 postAddErrorResponse.setTitle("Заголовок не установлен или слишком короткий");
             }
         }

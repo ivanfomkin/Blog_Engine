@@ -2,6 +2,7 @@ package ru.skillbox.ifomkin.diplom.service.impl;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,10 @@ public class PostServiceImpl implements PostService {
     private final PostVotesRepository votesRepository;
     private final TagService tagService;
     private final GlobalSettingService settingService;
+    @Value("${content.post.minimum-text-length}")
+    private Integer minimumPostTextLength;
+    @Value("${content.post.minimum-title-length}")
+    private Integer minimumPostTitleLength;
 
     @Autowired
     public PostServiceImpl(PostRepository postRepository, UserRepository userRepository, TagInPostService tagInPostService, PostVotesRepository votesRepository, TagService tagService, GlobalSettingService settingService) {
@@ -285,7 +290,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public boolean checkValidPostRequest(PostRequest postRequest) {
-        return (postRequest.getText().length() > 50) && (postRequest.getTitle().length() > 3);
+        return (postRequest.getText().length() > minimumPostTextLength) && (postRequest.getTitle().length() > minimumPostTitleLength);
     }
 
     @Override

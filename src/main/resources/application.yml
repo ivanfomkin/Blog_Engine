@@ -30,6 +30,19 @@ blog:
   copyright: Иван Фомкин
   copyrightFrom: 2019
 
+content:
+  post:
+    minimum-text-length: 50
+    minimum-title-length: 3
+  comment:
+    minimum-comment-length: 2
+  password:
+    minimum-password-length: 6
+  user:
+    minimum-name-length: 4
+    maximum-name-length: 30
+
+
 storage:
   location: upload
   max-file-size: 10MB

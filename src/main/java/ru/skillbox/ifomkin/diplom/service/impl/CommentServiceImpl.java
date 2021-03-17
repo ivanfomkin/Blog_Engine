@@ -1,6 +1,7 @@
 package ru.skillbox.ifomkin.diplom.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.skillbox.ifomkin.diplom.dto.comment.request.AddCommentRequest;
 import ru.skillbox.ifomkin.diplom.exception.comment.CommentLengthException;
@@ -23,6 +24,9 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository repository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+
+    @Value("${content.comment.minimum-comment-length}")
+    private Integer minimumCommentTextLength;
 
     @Autowired
     public CommentServiceImpl(CommentRepository repository, PostRepository postRepository, UserRepository userRepository) {
@@ -53,8 +57,8 @@ public class CommentServiceImpl implements CommentService {
             }
             comment.setParent(parentComment);
         }
-        if (request.getText().length() < 3)
-            throw new CommentLengthException("Comment length less then 3 characters");
+        if (request.getText().length() < minimumCommentTextLength)
+            throw new CommentLengthException("Comment length less then" + minimumCommentTextLength + " characters");
         comment.setPost(postById);
         comment.setText(request.getText());
         comment.setTime(LocalDateTime.now(ZoneId.systemDefault()));
