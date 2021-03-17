@@ -33,7 +33,7 @@ public class PostServiceImpl implements PostService {
     private final TagInPostService tagInPostService;
     private final PostVotesRepository votesRepository;
     private final TagService tagService;
-    private  final GlobalSettingService settingService;
+    private final GlobalSettingService settingService;
 
     @Autowired
     public PostServiceImpl(PostRepository postRepository, UserRepository userRepository, TagInPostService tagInPostService, PostVotesRepository votesRepository, TagService tagService, GlobalSettingService settingService) {
@@ -222,8 +222,8 @@ public class PostServiceImpl implements PostService {
         if (checkValidPostRequest(postRequest)) {
             User user = userRepository.findByEmail(principal.getName());
             Post post = new Post();
-            if (postRequest.getTimestamp() < System.currentTimeMillis()/1000) {
-                setPostTime(post, System.currentTimeMillis()/1000);
+            if (postRequest.getTimestamp() < System.currentTimeMillis() / 1000) {
+                setPostTime(post, System.currentTimeMillis() / 1000);
             } else {
                 setPostTime(post, postRequest.getTimestamp());
             }
@@ -253,8 +253,8 @@ public class PostServiceImpl implements PostService {
             Post postRepositoryById = postRepository.findPostById(postId);
             if (postRepository == null)
                 return false;
-            if (postRequest.getTimestamp() < System.currentTimeMillis()/1000) {
-                setPostTime(postRepositoryById, System.currentTimeMillis()/1000);
+            if (postRequest.getTimestamp() < System.currentTimeMillis() / 1000) {
+                setPostTime(postRepositoryById, System.currentTimeMillis() / 1000);
             } else {
                 setPostTime(postRepositoryById, postRequest.getTimestamp());
             }
@@ -315,17 +315,5 @@ public class PostServiceImpl implements PostService {
             postRepository.save(post);
             return true;
         }
-    }
-
-    @Override
-    public int getLikeCountByPost(Post post) {
-        Integer count = votesRepository.likeCountByPost(post.getId());
-        return count == null ? 0 : count;
-    }
-
-    @Override
-    public int getDislikeCountByPost(Post post) {
-        Integer count = votesRepository.dislikeCountByPost(post.getId());
-        return count == null ? 0 : count;
     }
 }

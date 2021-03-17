@@ -1,8 +1,10 @@
 package ru.skillbox.ifomkin.diplom.model;
 
 import lombok.Data;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Type;
-import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.hibernate.annotations.Where;
 import ru.skillbox.ifomkin.diplom.model.enumerated.Status;
 
 import javax.persistence.*;
@@ -49,7 +51,14 @@ public class Post implements Serializable {
     private Integer viewCount;
 
     @OneToMany(mappedBy = "post")
-    private List<Vote> votes;
+    @LazyCollection(LazyCollectionOption.EXTRA)
+    @Where(clause = "value = 1")
+    private List<Vote> likes;
+
+    @OneToMany(mappedBy = "post")
+    @LazyCollection(LazyCollectionOption.EXTRA)
+    @Where(clause = "value = -1")
+    private List<Vote> dislikes;
 
     @OneToMany(mappedBy = "post")
     private List<TagInPost> tags;

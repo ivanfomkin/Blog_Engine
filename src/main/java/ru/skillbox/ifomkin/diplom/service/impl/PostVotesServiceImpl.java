@@ -50,7 +50,7 @@ public class PostVotesServiceImpl implements PostVotesService {
             return false;
         }
 
-        Vote vote = votesRepository.findVoteByUserAndAndPost(user, post);
+        Vote vote = votesRepository.findVoteByUserAndPost(user, post);
         if (vote == null) {
             vote = new Vote();
             vote.setPost(post);
