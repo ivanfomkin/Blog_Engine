@@ -17,8 +17,6 @@ import ru.skillbox.ifomkin.diplom.dto.security.response.*;
 import ru.skillbox.ifomkin.diplom.dto.statistic.factory.StatisticResponseFactory;
 import ru.skillbox.ifomkin.diplom.model.User;
 import ru.skillbox.ifomkin.diplom.repository.CaptchaRepository;
-import ru.skillbox.ifomkin.diplom.repository.PostRepository;
-import ru.skillbox.ifomkin.diplom.repository.PostVotesRepository;
 import ru.skillbox.ifomkin.diplom.repository.UserRepository;
 import ru.skillbox.ifomkin.diplom.service.EmailService;
 import ru.skillbox.ifomkin.diplom.service.StorageService;
@@ -36,8 +34,6 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final StorageService storageService;
     private final EmailService emailService;
-    private final PostRepository postRepository;
-    private final PostVotesRepository votesRepository;
     private final CaptchaRepository captchaRepository;
 
     @Value("${storage.max-file-size}")
@@ -54,12 +50,10 @@ public class UserServiceImpl implements UserService {
     private String defaultAvatar;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, StorageService storageService, EmailService emailService, PostRepository postRepository, PostVotesRepository votesRepository, CaptchaRepository captchaRepository) {
+    public UserServiceImpl(UserRepository userRepository, StorageService storageService, EmailService emailService, CaptchaRepository captchaRepository) {
         this.userRepository = userRepository;
         this.storageService = storageService;
         this.emailService = emailService;
-        this.postRepository = postRepository;
-        this.votesRepository = votesRepository;
         this.captchaRepository = captchaRepository;
     }
 
@@ -179,6 +173,7 @@ public class UserServiceImpl implements UserService {
             user.setIsModerator(false);
             user.setPhoto(defaultAvatar);
             userRepository.save(user);
+            emailService.sendHelloMessage(request.getEmail().toLowerCase());
         } else {
             response.setErrors(errors);
         }

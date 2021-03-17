@@ -15,6 +15,7 @@ spring:
       max-request-size: 100MB
       max-file-size: 100MB
   mail:
+    address: d3vpub@yandex.ru
     host: smtp.yandex.ru
     port: 465
     username: d3vpub
