@@ -1,6 +1,7 @@
 package ru.skillbox.ifomkin.diplom.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.skillbox.ifomkin.diplom.dto.settings.request.ChangeGlobalSettingsRequest;
@@ -36,7 +37,7 @@ public class GlobalSettingServiceImpl implements GlobalSettingService {
     public ResponseEntity<?> changeGlobalSetting(ChangeGlobalSettingsRequest request, Principal principal) {
         User user = principal == null ? null : userRepository.findByEmail(principal.getName());
         if (user == null || !user.getIsModerator()) {
-            return ResponseEntity.status(403).build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } else {
             settingRepository.updateSettingByCode(MULTIUSER_MODE_CODE,
                     request.getMultiuserMode() ? "YES" : "NO");
