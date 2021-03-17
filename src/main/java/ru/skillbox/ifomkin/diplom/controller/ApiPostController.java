@@ -1,6 +1,7 @@
 package ru.skillbox.ifomkin.diplom.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,11 @@ import java.util.List;
 public class ApiPostController {
     private final PostService postService;
     private final PostVotesService votesService;
+
+    @Value("${content.post.minimum-text-length}")
+    private Integer minimumPostTextLength;
+    @Value("${content.post.minimum-title-length}")
+    private Integer minimumPostTitleLength;
 
     @Autowired
     public ApiPostController(PostService postService, PostVotesService votesService) {
@@ -113,7 +119,8 @@ public class ApiPostController {
             @RequestBody PostRequest postRequest,
             Principal principal) {
         return ResponseEntity.ok(PostResponseFactory.getPostAddResponse(
-                postService.createPost(postRequest, principal), postRequest));
+                postService.createPost(postRequest, principal), postRequest,
+                minimumPostTextLength, minimumPostTitleLength));
     }
 
     @PreAuthorize("hasAuthority('user:write')")
@@ -123,7 +130,8 @@ public class ApiPostController {
             Principal principal,
             @PathVariable Integer id) {
         return ResponseEntity.ok(PostResponseFactory.getPostAddResponse(
-                postService.updatePost(postRequest, id, principal), postRequest));
+                postService.updatePost(postRequest, id, principal), postRequest,
+                minimumPostTextLength, minimumPostTitleLength));
     }
 
     @PostMapping("/like")

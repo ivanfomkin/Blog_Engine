@@ -13,7 +13,6 @@ import ru.skillbox.ifomkin.diplom.model.Post;
 import ru.skillbox.ifomkin.diplom.model.User;
 import ru.skillbox.ifomkin.diplom.model.enumerated.Status;
 import ru.skillbox.ifomkin.diplom.repository.PostRepository;
-import ru.skillbox.ifomkin.diplom.repository.PostVotesRepository;
 import ru.skillbox.ifomkin.diplom.repository.UserRepository;
 import ru.skillbox.ifomkin.diplom.service.GlobalSettingService;
 import ru.skillbox.ifomkin.diplom.service.PostService;
@@ -32,7 +31,6 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final TagInPostService tagInPostService;
-    private final PostVotesRepository votesRepository;
     private final TagService tagService;
     private final GlobalSettingService settingService;
     @Value("${content.post.minimum-text-length}")
@@ -41,11 +39,10 @@ public class PostServiceImpl implements PostService {
     private Integer minimumPostTitleLength;
 
     @Autowired
-    public PostServiceImpl(PostRepository postRepository, UserRepository userRepository, TagInPostService tagInPostService, PostVotesRepository votesRepository, TagService tagService, GlobalSettingService settingService) {
+    public PostServiceImpl(PostRepository postRepository, UserRepository userRepository, TagInPostService tagInPostService, TagService tagService, GlobalSettingService settingService) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.tagInPostService = tagInPostService;
-        this.votesRepository = votesRepository;
         this.tagService = tagService;
         this.settingService = settingService;
     }
@@ -290,7 +287,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public boolean checkValidPostRequest(PostRequest postRequest) {
-        return (postRequest.getText().length() > minimumPostTextLength) && (postRequest.getTitle().length() > minimumPostTitleLength);
+        return (postRequest.getText().length() >= minimumPostTextLength) && (postRequest.getTitle().length() >= minimumPostTitleLength);
     }
 
     @Override
