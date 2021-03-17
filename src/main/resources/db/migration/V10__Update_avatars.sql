@@ -1,0 +1,1 @@
+UPDATE users SET photo = '/upload/default_avatar.jpg' WHERE id > 0;

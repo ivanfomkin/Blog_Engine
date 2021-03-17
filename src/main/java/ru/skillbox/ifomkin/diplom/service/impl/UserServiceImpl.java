@@ -50,6 +50,8 @@ public class UserServiceImpl implements UserService {
     private Integer minimumNameLength;
     @Value("${content.user.maximum-name-length}")
     private Integer maximumNameLength;
+    @Value("${storage.default-avatar}")
+    private String defaultAvatar;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, StorageService storageService, EmailService emailService, PostRepository postRepository, PostVotesRepository votesRepository, CaptchaRepository captchaRepository) {
@@ -175,6 +177,7 @@ public class UserServiceImpl implements UserService {
             user.setRegTime(LocalDateTime.now(ZoneId.systemDefault()));
             user.setPassword(new BCryptPasswordEncoder(12).encode(request.getPassword()));
             user.setIsModerator(false);
+            user.setPhoto(defaultAvatar);
             userRepository.save(user);
         } else {
             response.setErrors(errors);

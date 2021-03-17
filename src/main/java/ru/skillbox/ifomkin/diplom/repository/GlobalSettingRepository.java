@@ -33,6 +33,6 @@ public interface GlobalSettingRepository extends JpaRepository<GlobalSetting, In
     @Query(value = "UPDATE global_settings SET value = ?2 WHERE code = ?1", nativeQuery = true)
     void updateSettingByCode(String code, String value);
 
-    @Query(value = "SELECT * FROM global_settings WHERE code = ?1", nativeQuery = true)
+    @Query(value = "SELECT g.value FROM global_settings g WHERE g.code = ?1", nativeQuery = true)
     String getValueByCode(String code);
 }

@@ -48,6 +48,7 @@ storage:
   max-file-size: 10MB
   image-width: 36
   image-height: 36
+  default-avatar: /upload/default_avatar.jpg
 
 captcha:
   length: 5
