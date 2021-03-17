@@ -41,9 +41,8 @@ public class CommentServiceImpl implements CommentService {
             throws PostNotFoundException, CommentNotFoundException {
         Comment comment = new Comment();
         Post postById =
-//                request.getPostId() != null ?
-//                        postRepository.findPostById(request.getPostId()) :
-                        null;
+                request.getPostId() == null ? null :
+                        postRepository.findPostById(request.getPostId());
         if (postById == null) {
             throw new PostNotFoundException("Post with id " + request.getPostId() + " not found");
         }

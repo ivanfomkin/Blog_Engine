@@ -25,7 +25,8 @@ public class DefaultController {
             "/profile",
             "settings",
             "/stat",
-            "/404"
+            "/404",
+            "/comment"
     })
     public String all() {
         return "forward:/";

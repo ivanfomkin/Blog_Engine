@@ -16,9 +16,9 @@ import java.security.Principal;
 @RestController
 @RequestMapping("/api/comment")
 public class CommentController {
-    @Autowired
     private final CommentService commentService;
-
+    
+    @Autowired
     public CommentController(CommentService commentService) {
         this.commentService = commentService;
     }
