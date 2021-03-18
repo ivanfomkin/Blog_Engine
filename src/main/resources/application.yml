@@ -18,11 +18,11 @@ spring:
       max-request-size: 100MB
       max-file-size: 100MB
   mail:
-    address: d3vpub@yandex.ru
-    host: smtp.yandex.ru
-    port: 465
+    address: d3vpub@gmail.com
+    host: smtp.gmail.com
+    port: 993
     username: d3vpub
-    password: testPassword
+    password: d3vpub111
     properties:
       "mail.smtp.ssl.enable": true
 
