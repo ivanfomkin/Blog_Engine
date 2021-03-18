@@ -17,9 +17,11 @@ public class StatisticResponseFactory {
         response.setDislikesCount(dislikesCount == null ? 0 : dislikesCount);
         Integer viewsCount = responseFromDb.getViews();
         response.setViewsCount(viewsCount == null ? 0 : viewsCount);
-        Long firstPublication = responseFromDb.getFirstp().toEpochSecond(
-                OffsetDateTime.now(ZoneId.systemDefault()).getOffset()
-        );
+        Long firstPublication = responseFromDb.getFirstp() == null ?
+                null :
+                responseFromDb.getFirstp().toEpochSecond(
+                        OffsetDateTime.now(ZoneId.systemDefault()).getOffset()
+                );
         response.setFirstPublication(firstPublication);
         return response;
     }
