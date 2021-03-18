@@ -58,3 +58,6 @@ captcha:
   length: 5
   #in minutes
   drop-time: 60
+
+server:
+  port: ${PORT:8080}
