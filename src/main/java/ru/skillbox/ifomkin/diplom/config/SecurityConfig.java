@@ -48,6 +48,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Comm
                 .deleteCookies()
                 .and()
                 .httpBasic();
+        http.requiresChannel()
+                .requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null)
+                .requiresSecure();
     }
 
     @Bean
