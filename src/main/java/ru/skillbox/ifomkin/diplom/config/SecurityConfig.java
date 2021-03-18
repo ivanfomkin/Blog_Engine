@@ -2,6 +2,7 @@ package ru.skillbox.ifomkin.diplom.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -14,18 +15,21 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import ru.skillbox.ifomkin.diplom.service.StorageService;
 
 @Configuration
 @EnableWebSecurity
 @ComponentScan("security")
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig extends WebSecurityConfigurerAdapter implements CommandLineRunner {
 
     private final UserDetailsService userDetailsService;
+    private final StorageService storageService;
 
     @Autowired
-    public SecurityConfig(@Qualifier("userDetailsService") UserDetailsService userDetailsService) {
+    public SecurityConfig(@Qualifier("userDetailsService") UserDetailsService userDetailsService, StorageService storageService) {
         this.userDetailsService = userDetailsService;
+        this.storageService = storageService;
     }
 
 
@@ -62,5 +66,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public AuthenticationManager authenticationManager() throws Exception {
         return super.authenticationManager();
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        storageService.init();
     }
 }

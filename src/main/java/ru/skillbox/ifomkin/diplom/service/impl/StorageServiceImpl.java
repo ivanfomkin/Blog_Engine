@@ -2,6 +2,7 @@ package ru.skillbox.ifomkin.diplom.service.impl;
 
 import org.apache.commons.io.FilenameUtils;
 import org.imgscalr.Scalr;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.unit.DataSize;
@@ -34,7 +35,7 @@ public class StorageServiceImpl implements StorageService {
     @Value("${storage.image-height}")
     private Integer imageHeight;
 
-    public StorageServiceImpl(StorageConfig storageConfig) {
+    public StorageServiceImpl(@Autowired StorageConfig storageConfig) {
         this.rootLocation = Paths.get(storageConfig.getUploadPath());
     }
 

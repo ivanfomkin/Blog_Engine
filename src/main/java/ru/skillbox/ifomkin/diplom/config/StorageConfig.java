@@ -12,24 +12,15 @@ import ru.skillbox.ifomkin.diplom.service.StorageService;
 
 
 @Configuration
-public class StorageConfig implements WebMvcConfigurer, CommandLineRunner {
+public class StorageConfig implements WebMvcConfigurer {
     @Value("${storage.location}")
     @Getter
     private String uploadPath;
-
-    @Setter
-    @Autowired
-    private StorageService storageService;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("upload/**")
                 .addResourceLocations("file:" + uploadPath + "/");
-    }
-
-    @Override
-    public void run(String... args) throws Exception {
-        storageService.init();
     }
 }
 
