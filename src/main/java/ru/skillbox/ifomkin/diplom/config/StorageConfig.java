@@ -1,6 +1,7 @@
 package ru.skillbox.ifomkin.diplom.config;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -16,12 +17,9 @@ public class StorageConfig implements WebMvcConfigurer, CommandLineRunner {
     @Getter
     private String uploadPath;
 
-    private final StorageService storageService;
-
+    @Setter
     @Autowired
-    public StorageConfig(StorageService storageService) {
-        this.storageService = storageService;
-    }
+    private StorageService storageService;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
