@@ -1,1 +1,1 @@
-web: java -jar target/Blog_Engine-1.0.jar
+web: java $JAVA_OPTS -cp target/classes:target/dependency/* ru.skillbox.ifomkin.diplom.Main
