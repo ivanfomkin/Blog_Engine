@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:${DATABASE_URL:postgresql://localhost:5432/blogdb}
+    url: jdbc:${POSTGRES_DATABASE_URL:postgresql://localhost:5432/blogdb}
     driver-class-name: org.postgresql.Driver
     username: postgres
     password: mysimplepass
@@ -12,7 +12,7 @@ spring:
   flyway:
     username: postgres
     password: mysimplepass
-    url: jdbc:${DATABASE_URL:postgresql://localhost:5432/blogdb}
+    url: jdbc:${POSTGRES_DATABASE_URL:postgresql://localhost:5432/blogdb}
   servlet:
     multipart:
       max-request-size: 100MB
