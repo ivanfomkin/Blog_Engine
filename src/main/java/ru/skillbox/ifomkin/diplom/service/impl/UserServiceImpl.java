@@ -22,6 +22,7 @@ import ru.skillbox.ifomkin.diplom.service.EmailService;
 import ru.skillbox.ifomkin.diplom.service.StorageService;
 import ru.skillbox.ifomkin.diplom.service.UserService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDateTime;
@@ -195,7 +196,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public LoginResponse restorePassword(RestorePasswordRequest request) {
+    public LoginResponse restorePassword(RestorePasswordRequest request, HttpServletRequest servletRequest) {
         LoginResponse response = new LoginResponse();
         String email = request.getEmail();
         if (this.isExists(email)) {
@@ -205,7 +206,7 @@ public class UserServiceImpl implements UserService {
             user.setCode(hash);
             userRepository.save(user);
 
-            emailService.sendRestorePasswordMessage(email, hash);
+            emailService.sendRestorePasswordMessage(email, hash, servletRequest);
             response.setResult(true);
         } else {
             response.setResult(false);

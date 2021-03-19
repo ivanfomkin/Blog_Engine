@@ -7,8 +7,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import ru.skillbox.ifomkin.diplom.service.EmailService;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import javax.servlet.http.HttpServletRequest;
 
 @Service
 public class EmailServiceImpl implements EmailService {
@@ -27,22 +26,20 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendRestorePasswordMessage(String email, String hash) {
+    public void sendRestorePasswordMessage(String email, String hash, HttpServletRequest servletRequest) {
         StringBuilder messageText = new StringBuilder();
-        try {
-            messageText.append("Добрый день! \n")
-                    .append("Вы запросили воссстановление паароля на портале ")
-                    .append(blogTitle)
-                    .append("\n Для восстановления пароля передите по ссылке ниже: \n")
-                    .append("http://")
-                    .append(InetAddress.getLocalHost().getHostAddress())
-                    .append(":8080/login/change-password/")
-                    .append(hash)
-                    .append("\n С наилучшими пожеланиями, команда ")
-                    .append(blogTitle);
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
+
+        messageText.append("Добрый день! \n")
+                .append("Вы запросили воссстановление паароля на портале ")
+                .append(blogTitle)
+                .append("\n Для восстановления пароля передите по ссылке ниже: \n")
+                .append("http://")
+                .append(servletRequest.getHeader("HOST"))
+                .append("/login/change-password/")
+                .append(hash)
+                .append("\n С наилучшими пожеланиями, команда ")
+                .append(blogTitle);
+
         sentMessage(noReplyEmailAddress, email, PASSWORD_RESTORE_SUBJECT, messageText.toString());
     }
 

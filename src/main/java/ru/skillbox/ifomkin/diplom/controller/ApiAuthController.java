@@ -89,8 +89,9 @@ public class ApiAuthController {
     }
 
     @PostMapping("/restore")
-    public ResponseEntity<?> restorePassword(@RequestBody RestorePasswordRequest request) {
-        return ResponseEntity.ok(userService.restorePassword(request));
+    public ResponseEntity<?> restorePassword(@RequestBody RestorePasswordRequest request,
+                                             HttpServletRequest servletRequest) {
+        return ResponseEntity.ok(userService.restorePassword(request, servletRequest));
     }
 
     @PostMapping("/password")

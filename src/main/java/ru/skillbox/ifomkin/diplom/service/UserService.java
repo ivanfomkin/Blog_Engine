@@ -12,6 +12,7 @@ import ru.skillbox.ifomkin.diplom.dto.security.response.PasswordRestoreResponse;
 import ru.skillbox.ifomkin.diplom.dto.security.response.RegisterResponse;
 import ru.skillbox.ifomkin.diplom.model.User;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public interface UserService {
 
     Boolean checkValidPassword(String password);
 
-    LoginResponse restorePassword(RestorePasswordRequest request);
+    LoginResponse restorePassword(RestorePasswordRequest request, HttpServletRequest servletRequest);
 
     String generatePasswordRestoreHash();
 
