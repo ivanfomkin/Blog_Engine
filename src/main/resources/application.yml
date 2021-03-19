@@ -1,30 +1,31 @@
 spring:
   datasource:
-    url: jdbc:postgresql://ec2-54-155-226-153.eu-west-1.compute.amazonaws.com:5432/d88b156e2hver8
+    url: jdbc:${DATABASE_URL:postgresql://localhost:5432/blogdb}
     driver-class-name: org.postgresql.Driver
-    username: gmfnoixmhspikv
-    password: 82079c6fddde324bd34a1e550912f56f1f5a66150dfab28f954bc41a1ac6f3c6
+    username: postgres
+    password: mysimplepass
   jpa:
     show-sql: false
     hibernate:
       ddl-auto: validate
     database-platform: org.hibernate.dialect.PostgreSQL94Dialect
   flyway:
-    username: gmfnoixmhspikv
-    password: 82079c6fddde324bd34a1e550912f56f1f5a66150dfab28f954bc41a1ac6f3c6
-    url: jdbc:postgresql://ec2-54-155-226-153.eu-west-1.compute.amazonaws.com:5432/d88b156e2hver8
+    username: postgres
+    password: mysimplepass
+    url: jdbc:${DATABASE_URL:postgresql://localhost:5432/blogdb}
   servlet:
     multipart:
       max-request-size: 100MB
       max-file-size: 100MB
   mail:
     address: devpub@rambler.ru
-    host: smtp.rambler.ru
-    port: 465
-    username: devpub
-    password: d3vPub112
+    host: email-smtp.us-east-2.amazonaws.com
+    port: 587
+    username: AKIAUMFYGWQRZCNHISWF
+    password: BCFJHBSHHODxtLCue3TNDpqmntK0X2VFXfI1yDUOt/73
     properties:
-      "mail.smtp.ssl.enable": true
+      "mail.smtp.starttls.enable": true
+      "mail.smtp.starttls.required": true
 
 blog:
   title: DevPub
