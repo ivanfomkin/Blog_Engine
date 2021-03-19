@@ -27,10 +27,10 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
             "ORDER BY (select count(*) count from post_comments c where c.post_id = p.id) DESC", nativeQuery = true)
     List<Post> findPopularPublishedPosts(Pageable pageable);
 
-    @Query(value = "SELECT * FROM posts p LEFT JOIN " +
+    @Query(value = "SELECT p.* FROM posts p LEFT JOIN " +
             "post_votes pv ON p.id = pv.post_id WHERE p.is_active = 1 " +
             "AND p.moderation_status = 'ACCEPTED' AND p.time <= NOW() " +
-            "GROUP BY p.id, pv.id ORDER BY -SUM(pv.value) ASC",
+            "GROUP BY p.id ORDER BY -SUM(pv.value) ASC",
             nativeQuery = true)
     List<Post> findBestPublishedPosts(Pageable pageable);
 
@@ -41,10 +41,6 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query(value = "SELECT COUNT(*) FROM posts p WHERE is_active = 1 AND moderation_status = 'ACCEPTED' AND " +
             "time <= NOW()", nativeQuery = true)
     Integer countAllPublishedPosts();
-
-    @Query(value = "SELECT COUNT(*) FROM posts p WHERE is_active = 1 AND moderation_status = 'ACCEPTED' AND " +
-            "time <= NOW() AND user_id = ?1", nativeQuery = true)
-    Integer countAllPublishedPostsByUser(Integer userId);
 
     @Query(value = "SELECT * FROM posts p WHERE is_active = 1 AND moderation_status = 'ACCEPTED' AND " +
             "time <= NOW() AND (LOWER(p.text) like %:query% OR LOWER(p.title) like %:query%) " +
