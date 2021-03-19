@@ -15,8 +15,8 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQL94Dialect
   flyway:
     #local
-    #    username: postgres
-    #    password: mysimplepass
+#        username: postgres
+#        password: mysimplepass
     #production
     username: gmfnoixmhspikv
     password: 82079c6fddde324bd34a1e550912f56f1f5a66150dfab28f954bc41a1ac6f3c6
@@ -29,8 +29,8 @@ spring:
     address: devpub@rambler.ru
     host: email-smtp.us-east-2.amazonaws.com
     port: 587
-    username: AKIAUMFYGWQRTE72ABMK
-    password: vAw7NqFKZe6mVG/a0qb1gUencPdFpjyKvBe02DOy
+    username: AKIAUMFYGWQRXW27DKFL
+    password: BPXwGQ7br199/vduHr5+ovyyXfkoyQYXpbq/Lr54W5fq
     properties:
       "mail.smtp.starttls.enable": true
       "mail.smtp.starttls.required": true
