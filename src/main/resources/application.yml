@@ -2,16 +2,24 @@ spring:
   datasource:
     url: jdbc:${POSTGRES_DATABASE_URL:postgresql://localhost:5432/blogdb}
     driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: mysimplepass
+    #local
+    #    username: postgres
+    #    password: mysimplepass
+    #production
+    username: gmfnoixmhspikv
+    password: 82079c6fddde324bd34a1e550912f56f1f5a66150dfab28f954bc41a1ac6f3c6
   jpa:
     show-sql: false
     hibernate:
       ddl-auto: validate
     database-platform: org.hibernate.dialect.PostgreSQL94Dialect
   flyway:
-    username: postgres
-    password: mysimplepass
+    #local
+    #    username: postgres
+    #    password: mysimplepass
+    #production
+    username: gmfnoixmhspikv
+    password: 82079c6fddde324bd34a1e550912f56f1f5a66150dfab28f954bc41a1ac6f3c6
     url: jdbc:${POSTGRES_DATABASE_URL:postgresql://localhost:5432/blogdb}
   servlet:
     multipart:
