@@ -29,8 +29,8 @@ spring:
     address: devpub@rambler.ru
     host: email-smtp.us-east-2.amazonaws.com
     port: 587
-    username: AKIAUMFYGWQR5BQ2E36C
-    password: QLsfy9OPFgJrrmKHyVNlvuj+dBtE0ggqMRQfAuQ3
+    username: AKIAUMFYGWQRS26K35BC
+    password: BB9NY+4R8Q5wrPZwhvTuGkwJ4Gx3BDLat2iMCUiqB3pa
     properties:
       "mail.smtp.starttls.enable": true
       "mail.smtp.starttls.required": true
