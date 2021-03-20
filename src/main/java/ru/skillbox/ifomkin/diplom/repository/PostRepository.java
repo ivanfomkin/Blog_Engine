@@ -104,5 +104,4 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
             "AND p.time < NOW() AND p.moderation_status = 'ACCEPTED' " +
             "AND EXTRACT(YEAR from p.time) = :year GROUP BY date", nativeQuery = true)
     List<PostCountByDateFromDb> getPostsCountByDate(@Param("year") Integer year);
-
 }

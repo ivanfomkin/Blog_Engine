@@ -75,10 +75,10 @@ public class PostServiceImpl implements PostService {
         User user = principal == null ? null : userRepository.findByEmail(principal.getName());
         Post post = postRepository.findPostById(id);
         if (user == null && post != null) {
-            incrementViewCount(post);
+            this.incrementViewCount(post);
         } else if (post != null && !user.getIsModerator()) {
             if (!post.getUser().equals(user)) {
-                incrementViewCount(post);
+                this.incrementViewCount(post);
             }
         }
         if (!post.getIsActive() || !post.getModerationStatus().equals(Status.ACCEPTED)) {
@@ -217,6 +217,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public void incrementViewCount(Post post) {
         postRepository.incrementViewCount(post.getId());
+        post.setViewCount(post.getViewCount() + 1);
     }
 
     @Override
